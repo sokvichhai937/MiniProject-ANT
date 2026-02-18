@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - Lam Tong</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>My Profile</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button onclick="toggleLanguage()">Switch Language</button>
+    <button onclick="toggleTheme()">Dark/Light Mode</button>
+  </header>
+
+  <section class="profile-card">
+    <img src="images/profile.jpg" alt="Lam Tong" class="profile-pic">
+    <h2 id="name">Lam Tong</h2>
+    <p id="bio">Hello! I’m Lam Tong, passionate about programming and design.</p>
+    
+    <h3>Skills</h3>
+    <ul>
+      <li>C++ programming (sorting, geometry calculations)</li>
+      <li>HTML & CSS design</li>
+      <li>Interactive learning activities</li>
+      <li>Bilingual communication (Khmer & English)</li>
+    </ul>
+
+    <h3>Contact Me</h3>
+    <form onsubmit="return validateForm()">
+      <input type="text" id="username" placeholder="Your Name">
+      <input type="email" id="email" placeholder="Your Email">
+      <textarea id="message" placeholder="Message"></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2026 Lam Tong</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

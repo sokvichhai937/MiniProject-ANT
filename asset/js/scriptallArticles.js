@@ -1,5 +1,5 @@
-let token =`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMjQsImlhdCI6MTc3MTIyNzMxNCwiZXhwIjoxNzcxODMyMTE0fQ.zpXRLRUQZT6W8mzg7SUzcAvx2W0uBZy87zfxVa8uxhg`;
-        fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own`,{
+let token =`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyNjQsImlhdCI6MTc3MTQ5Mjg1NCwiZXhwIjoxNzcyMDk3NjU0fQ.dK69T0wKxb2RABjmqWW7JiEr_uXSfe-2W7qXgOkXOrI`;
+        fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own?search=&_page=1&_per_page=100&sortBy=createdAt&sortDir=asc`,{
         headers:{
             'Authorization':`${token}`
               }
@@ -9,16 +9,16 @@ let token =`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMjQsImlhdCI6
         .then(dataArticle=>
         {
             console.log(dataArticle.data.items);
-            let ownArticles = dataArticle.data.items;
-            let tableBody = document.getElementById("tableBody");
-            ownArticles.forEach(ownArt=>{
-                console.log(ownArt);
+            let allArticles = dataArticle.data.items;
+            let tableBody = document.getElementById("tbody");
+            allArticles.forEach(ownArt=>{
+                console.log(ownArt)
                 tableBody.innerHTML += `<tr>
-                    <th>${ownArt.id}</th>
-                    <th>${ownArt.title}</th>
-                   <th><img src="${ownArt.thumbnail}" alt=""></th>
-                    <th>Content</th>
-                </tr>`
+                                <td>${ownArt.title}</td>
+                                <td>${ownArt.category}</td>
+                                <td>${ownArt.content}</td>
+                                <th><img src="${ownArt.thumbnail}" alt=""></th>
+                            </tr> `
 
             })
         })

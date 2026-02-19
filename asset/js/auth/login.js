@@ -1,5 +1,4 @@
-// ១. ពិនិត្យមើល Token
-let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyNTUsImlhdCI6MTc3MTQ4NDAxNCwiZXhwIjoxNzcyMDg4ODE0fQ.Y3Cs0LWbXCCwcpRUdNR3H9p0sw5UvV1qqMeHkxXn-B4";
+// ១. ពិនិត្យមើល Token (ការពារកុំឱ្យចូលមកទំព័រ Login បើមាន Token រួចហើយ)
 if (localStorage.getItem("token")) {
   window.location.href = "dashboard.html";
 }
@@ -22,25 +21,20 @@ function togglePassword() {
 async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
-  const errorMsg = document.getElementById("error-msg");
   const loginBtn = document.getElementById("login-btn");
 
-  errorMsg.textContent = "";
-
-  if (email === "" || password === "") {
-    errorMsg.textContent = "សូមបញ្ចូលអ៊ីមែល និងលេខកូដសម្ងាត់របស់អ្នក។";
+  // ការពិនិត្យទិន្នន័យបញ្ចូល (Validation)
+  if (!email || !password) {
+    Swal.fire({
+      icon: "warning",
+      title: "សូមបំពេញព័ត៌មាន",
+      text: "សូមបញ្ចូលអ៊ីមែល និងលេខកូដសម្ងាត់របស់អ្នក!",
+      confirmButtonColor: "#198754",
+    });
     return;
   }
 
-  if (email === "") {
-    errorMsg.textContent = "សូមបញ្ចូលអ៊ីមែល។";
-    return;
-  }
-  if (password === "") {
-    errorMsg.textContent = "សូមបញ្ចូលលេខកូដសម្ងាត់របស់អ្នក។";
-    return;
-  }
-
+  // បង្ហាញ Loading នៅលើប៊ូតុង
   const originalText = loginBtn.innerText;
   loginBtn.disabled = true;
   loginBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> កំពុងផ្ទៀងផ្ទាត់...`;
@@ -62,12 +56,34 @@ async function login() {
     }
 
     if (data.token) {
+      // រក្សាទុក Token និងបង្ហាញ Toast ជោគជ័យ
       localStorage.setItem("token", data.token);
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
+
+      await Toast.fire({
+        icon: "success",
+        title: "ចូលប្រើប្រាស់ជោគជ័យ",
+      });
+
       window.location.href = "dashboard.html";
     }
   } catch (error) {
-    errorMsg.textContent = error.message;
+    // បង្ហាញផ្ទាំង Error បើ Login មិនចូល
+    Swal.fire({
+      icon: "error",
+      title: "បរាជ័យ",
+      text: error.message,
+      confirmButtonColor: "#d33",
+    });
   } finally {
+    // បិទ Loading វិញ
     loginBtn.disabled = false;
     loginBtn.innerHTML = originalText;
   }

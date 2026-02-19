@@ -1,48 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
-  <meta charset="UTF-8">
-  <title>My Profile - Lam Tong</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Blog Admin - Profile</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg1: #cfe9ea;
+            --bg2: #d7d6ff;
+            --glass: rgba(255, 255, 255, 0.75);
+            --primary: #18b6b6;
+            --sidebar-dark: #1e1e2d;
+            --text-color: #007979;
+            --shadow: 0 18px 40px rgba(25, 40, 55, 0.12);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+            font-family: 'Kantumruy Pro', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-dark);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .brand { padding: 0 25px 35px; color: #fff; font-size: 22px; font-weight: 700; display: flex; align-items: center; }
+        .nav-item {
+            padding: 12px 25px; display: flex; align-items: center;
+            color: inherit; text-decoration: none; transition: 0.3s;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        .nav-item i { width: 30px; }
+
+        /* --- MAIN CONTENT --- */
+        .main-wrapper { margin-left: 260px; flex: 1; padding: 40px; }
+
+        .top-navbar { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        .user-profile-nav { display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* --- AVATAR LOGIC --- */
+        .profile-header { display: flex; align-items: center; gap: 30px; margin-bottom: 40px; }
+        .avatar-container { position: relative; width: 120px; height: 120px; }
+        .avatar-container img { 
+            width: 100%; height: 100%; border-radius: 50%; 
+            object-fit: cover; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .avatar-btn {
+            position: absolute; bottom: 0; width: 35px; height: 35px;
+            border-radius: 50%; border: none; color: #fff; display: flex; align-items: center; justify-content: center;
+        }
+        .btn-trash { left: 0; background: #ff4d49; }
+        .btn-cam { right: 0; background: var(--sidebar-dark); cursor: pointer; }
+
+        /* --- FORMS --- */
+        .form-label { font-size: 14px; font-weight: 600; color: var(--text-color); margin-bottom: 8px; }
+        .form-input {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px; padding: 12px 15px; width: 100%; transition: 0.3s;
+        }
+        .form-input:focus { outline: none; border-color: var(--primary); background: #fff; }
+
+        .btn-save { background: var(--sidebar-dark); color: #fff; border: none; padding: 12px 35px; border-radius: 10px; font-weight: 600; }
+        .btn-cancel { background: transparent; border: 1px solid #ccc; padding: 12px 35px; border-radius: 10px; margin-left: 10px; }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-box { background: #fff; padding: 30px; border-radius: 20px; width: 450px; text-align: center; }
+        .crop-preview { width: 100%; height: 250px; background: #f0f0f0; border: 2px dashed #ccc; margin: 20px 0; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .crop-preview img { max-width: 100%; max-height: 100%; }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>My Profile</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="profile.html">Profile</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-    <button onclick="toggleLanguage()">Switch Language</button>
-    <button onclick="toggleTheme()">Dark/Light Mode</button>
-  </header>
 
-  <section class="profile-card">
-    <img src="images/profile.jpg" alt="Lam Tong" class="profile-pic">
-    <h2 id="name">Lam Tong</h2>
-    <p id="bio">Hello! I’m Lam Tong, passionate about programming and design.</p>
-    
-    <h3>Skills</h3>
-    <ul>
-      <li>C++ programming (sorting, geometry calculations)</li>
-      <li>HTML & CSS design</li>
-      <li>Interactive learning activities</li>
-      <li>Bilingual communication (Khmer & English)</li>
-    </ul>
+    <aside class="sidebar">
+        <div class="brand"><i class="fa-solid fa-bars-staggered me-3"></i> Blog</div>
+        <div class="px-4 mb-2 small text-uppercase opacity-50">Admin</div>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-file-lines"></i> My Articles</a>
+        <a href="javascript:location.reload()" class="nav-item text-danger mt-5"><i class="fa-solid fa-power-off"></i> Logout</a>
+    </aside>
 
-    <h3>Contact Me</h3>
-    <form onsubmit="return validateForm()">
-      <input type="text" id="username" placeholder="Your Name">
-      <input type="email" id="email" placeholder="Your Email">
-      <textarea id="message" placeholder="Message"></textarea>
-      <button type="submit">Send</button>
-    </form>
-  </section>
+    <main class="main-wrapper">
+        <div class="top-navbar">
+            <div class="user-profile-nav">
+                <img src="https://ui-avatars.com/api/?name=Tong+Lam&background=18b6b6&color=fff" id="nav-img" width="35" height="35" class="rounded-circle">
+                <span>Tong Lam <i class="fa-solid fa-chevron-down ms-1" style="font-size: 10px;"></i></span>
+            </div>
+        </div>
 
-  <footer>
-    <p>© 2026 Lam Tong</p>
-  </footer>
+        <div class="glass-card">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img src="https://ui-avatars.com/api/?name=Tong+Lam&background=18b6b6&color=fff" id="main-img">
+                    <button class="avatar-btn btn-trash" onclick="resetAvatar()"><i class="fa-solid fa-trash-can"></i></button>
+                    <label for="img-upload" class="avatar-btn btn-cam"><i class="fa-solid fa-camera"></i></label>
+                    <input type="file" id="img-upload" hidden accept="image/*" onchange="handleImage(event)">
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1" id="hdr-name">Tong Lam</h2>
+                    <p class="text-muted mb-0" id="hdr-email">lamtong168@gmail.com</p>
+                    <small class="opacity-75">Profile picture updates automatically</small>
+                </div>
+            </div>
 
-  <script src="script.js"></script>
+            <form id="profileForm">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" id="in-fname" value="Tong">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" id="in-lname" value="Lam">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="in-email" value="lamtong168@gmail.com">
+                    </div>
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn-save">Save Changes</button>
+                        <button type="button" class="btn-cancel" onclick="location.reload()">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="cropModal">
+        <div class="modal-box">
+            <h5 class="fw-bold">Crop Profile Image</h5>
+            <div class="crop-preview" id="cropPreview">
+                <span class="text-muted">Preview goes here</span>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button class="btn btn-light btn-sm px-4" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-dark btn-sm px-4" onclick="applyCrop()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tempImageData = "";
+
+        // 1. Handle Image Upload & Show Modal
+        function handleImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    tempImageData = event.target.result;
+                    document.getElementById('cropPreview').innerHTML = `<img src="${tempImageData}">`;
+                    document.getElementById('cropModal').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function closeModal() { document.getElementById('cropModal').style.display = 'none'; }
+
+        function applyCrop() {
+            document.getElementById('main-img').src = tempImageData;
+            document.getElementById('nav-img').src = tempImageData;
+            closeModal();
+        }
+
+        // 2. Reset Avatar to Default
+        function resetAvatar() {
+            const def = "https://ui-avatars.com/api/?name=Tong+Lam&background=18b6b6&color=fff";
+            document.getElementById('main-img').src = def;
+            document.getElementById('nav-img').src = def;
+        }
+
+        // 3. Form Submission logic
+        document.getElementById('profileForm').onsubmit = function(e) {
+            e.preventDefault();
+            const fn = document.getElementById('in-fname').value;
+            const ln = document.getElementById('in-lname').value;
+            const em = document.getElementById('in-email').value;
+
+            document.getElementById('hdr-name').innerText = fn + " " + ln;
+            document.getElementById('hdr-email').innerText = em;
+            
+            alert("Updated Successfully!");
+        };
+    </script>
 </body>
 </html>

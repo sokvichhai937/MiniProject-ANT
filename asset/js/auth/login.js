@@ -1,6 +1,6 @@
 // ១. ពិនិត្យមើល Token (ការពារកុំឱ្យចូលមកទំព័រ Login បើមាន Token រួចហើយ)
 if (localStorage.getItem("token")) {
-  window.location.href = "dashboard.html";
+  window.location.href = "pages/dashboard.html";
 }
 
 // ២. មុខងារបិទ/បើកមើលលេខកូដ

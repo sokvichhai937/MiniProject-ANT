@@ -1,6 +1,6 @@
 // ១. ពិនិត្យមើល Token (ការពារកុំឱ្យចូលមកទំព័រ Login បើមាន Token រួចហើយ)
 if (localStorage.getItem("token")) {
-  window.location.href = "dashboard.html";
+  window.location.href = "pages/dashboard.html";
 }
 
 // ២. មុខងារបិទ/បើកមើលលេខកូដ
@@ -19,6 +19,8 @@ function togglePassword() {
 
 // ៣. មុខងារ Login
 async function login() {
+  console.log(1);
+  
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const loginBtn = document.getElementById("login-btn");
@@ -48,16 +50,20 @@ async function login() {
         body: JSON.stringify({ email, password }),
       },
     );
-
+    console.log(response);
+    
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.message || "អ៊ីមែល ឬលេខកូដសម្ងាត់មិនត្រឹមត្រូវ!");
     }
+console.log(data.data.token);
 
-    if (data.token) {
+    if (data.data.token) {
+      console.log(2);
+      
       // រក្សាទុក Token និងបង្ហាញ Toast ជោគជ័យ
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.data.token);
 
       const Toast = Swal.mixin({
         toast: true,
@@ -72,7 +78,7 @@ async function login() {
         title: "ចូលប្រើប្រាស់ជោគជ័យ",
       });
 
-      window.location.href = "dashboard.html";
+      window.location.href = "pages/dashboard.html";
     }
   } catch (error) {
     // បង្ហាញផ្ទាំង Error បើ Login មិនចូល

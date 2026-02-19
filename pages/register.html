@@ -120,7 +120,7 @@ async function register() {
 
         if (response.ok) {
             Swal.fire({ icon: 'success', title: 'ចុះឈ្មោះជោគជ័យ!' }).then(() => {
-                window.location.href = '../index.html';
+                window.location.href = 'dashboard.html';
             });
         } else {
             throw new Error(data.message || 'ចុះឈ្មោះបរាជ័យ');
@@ -143,92 +143,3 @@ async function register() {
     <script>AOS.init();</script>
 </body>
 </html>
-<script>
-
-
-async function register() {
-    // ទាញយកទិន្នន័យពី Input
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value;
-    const confirmPassword = document.getElementById('reg-confirm-password').value;
-    const registerBtn = document.getElementById('register-btn');
-
-    // ២. ការពិនិត្យទិន្នន័យ (Validation)
-    // valisateion email
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'សូមបំពេញព័ត៌មាន',
-            text: 'អ៊ីមែលមិនត្រឹមត្រូវ!',
-            confirmButtonColor: '#198754'
-        });
-        return;
-    }
-
-    if (password !== confirmPassword) {
-        Swal.fire({
-            icon: 'error',
-            title: 'លេខកូដមិនស៊ីគ្នា',
-            text: 'សូមពិនិត្យមើលលេខកូដសម្ងាត់ទាំងពីរម្តងទៀត!',
-            confirmButtonColor: '#d33'
-        });
-        return;
-    }
-
-    // ៣. បង្ហាញ Loading នៅលើប៊ូតុង
-    const originalText = registerBtn.innerText;
-    registerBtn.disabled = true;
-    registerBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> កំពុងចុះឈ្មោះ...`;
-
-    try {
-        const response = await fetch('https://blogs2.csm.linkpc.net/api/v1/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                name: name,
-                email: email, 
-                password: password 
-            })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // ៤. បង្ហាញសារជោគជ័យជាមួយ SweetAlert2
-            Swal.fire({
-                icon: 'success',
-                title: 'ចុះឈ្មោះជោគជ័យ!',
-                text: 'គណនីរបស់អ្នកត្រូវបានបង្កើត។ សូមចូលប្រើប្រាស់ឥឡូវនេះ!',
-                confirmButtonText: 'ទៅកាន់ទំព័រ Login',
-                confirmButtonColor: '#198754'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '../index.html'; // ទៅកាន់ទំព័រ Login
-                }
-            });
-        } else {
-            // បង្ហាញ Error ពី Server
-            throw new Error(data.message || 'ការចុះឈ្មោះបរាជ័យ!');
-        }
-
-    } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'មានបញ្ហា!',
-            text: error.message,
-            confirmButtonColor: '#d33'
-        });
-    } finally {
-        // បិទ Loading វិញ
-        registerBtn.disabled = false;
-        registerBtn.innerText = originalText;
-    }
-}
-
-    
-</script>

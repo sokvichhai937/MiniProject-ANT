@@ -10,6 +10,7 @@
 
   </head>
   
+  
   <body>
     <div class="layout">
       <aside class="sidebar" id="sidebar">
@@ -66,20 +67,13 @@
           
           <div class="ms-auto dropdown">
             <div class="userbox dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-              <img class="avatar" src="https://i.pravatar.cc/80?img=12" alt="avatar" />
+              <img class="avatar" id="avatarUser" src="https://i.pravatar.cc/80?img=12" alt="avatar" />
               <div class="d-none d-sm-block">
-                <div style="font-weight: 1000; line-height: 1.1">User Admin</div>
-      
-              </div>
-              <i class="fa-solid fa-chevron-down text-muted ms-1" style="font-size: 11px"></i>
-            </div>
+                <div style="font-weight: 1000; line-height: 1.1" id="userProfile">User Admin</div>
 
             <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-2" aria-labelledby="profileDropdown">
               <li>
                 <a class="dropdown-item" href="#"><i class="fa-regular fa-user me-2"></i> Profile</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="fa-solid fa-gear me-2"></i> Settings</a>
               </li>
               <li><hr class="dropdown-divider" style="opacity: 0.1;"></li>
               <li>
@@ -186,6 +180,33 @@
           }
         });
       });
+
+
+
+
+      // ប្រសិនបើគ្មាន Token របស់ User ឬ User មិនទាន់ Login វានឹងបង្ហាញ page Login
+      const token = localStorage.getItem('token');
+      if(!token){
+        window.location.href = '../index.html'
+      }
+
+      // get token for display info
+      let userProfile = document.getElementById('userProfile');
+      fetch('https://blogs2.csm.linkpc.net/api/v1/auth/register', {
+        headers: {
+          'Authorization' : `Bearer ${token}`
+        }
+      }).then(res => res.json()).then(authorization =>{
+        console.log(authorization);
+        userProfile.innerHTML = authorization.data.name;
+      })
+      .catch(err => {
+        alert(err);
+      })
+
+
+      
+
     </script>
   </body>
 </html>

@@ -2,7 +2,6 @@
 if (localStorage.getItem("token")) {
   window.location.href = "pages/dashboard.html";
 }
-
 // ២. មុខងារបិទ/បើកមើលលេខកូដ
 function togglePassword() {
   const passwordInput = document.getElementById("password");

@@ -28,14 +28,14 @@
 
       <nav class="d-grid gap-2">
 
-        <a class="nav-pill active" href="dashboard.html">
+        <a class="nav-pill" href="dashboard.html">
           <span class="ic"><i class="bi bi-speedometer2"></i></span>
           <span class="label flex-grow-1">Dashboard</span>
         </a>
 
         <!-- My Articles (collapsible) -->
         <button
-          class="nav-pill w-100 text-start"
+          class="nav-pill w-100 text-start active"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#articlesMenu"
@@ -49,7 +49,7 @@
 
         <div class="collapse show" id="articlesMenu">
           <div class="submenu">
-            <a class="" href="all-article.html">All Articles</a>
+            <a class="active" href="all-article.html">All Articles</a>
             <a href="create-article.html">Create Article</a>
           </div>
         </div>
@@ -113,111 +113,90 @@
       </div>
 
       <!-- CONTENT -->
-      <section class="content-surface">
+         <section class="content-surface">
 
-        <div class="articles-wrap">
+  <div class="aTable-wrap">
 
-          <!-- Header -->
-          <div class="articles-head">
-            <div>
-              <h2 class="articles-title">All articles</h2>
-              <div class="articles-sub">Manage, search and open your articles.</div>
-            </div>
+    <!-- Header -->
+    <div class="aTable-head">
+      <div>
+        <h2 class="aTable-title">All articles</h2>
+        <div class="aTable-sub">Manage your articles, edit or delete.</div>
+      </div>
 
-            <a class="btn btn-create" href="create-article.html">
-              <i class="bi bi-plus-circle me-2"></i> Create New Article
+      <a class="btn aTable-btn" href="create-article.html">
+        <i class="bi bi-plus-circle me-2"></i> Create New Article
+      </a>
+    </div>
+
+    <!-- Table -->
+    <div class="aTable-card">
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="py-3">Title</th>
+              <th class="py-3">Category</th>
+              <th class="py-3">Content</th>
+              <th class="py-3">Thumbnail</th>
+              <th class="py-3 text-end">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="articleTbody">
+            <tr>
+              <td class="fw-bold fs-5">dododcccccc</td>
+              <td class="fw-bold">ACB</td>
+
+              <td class="text-muted fw-semibold">
+                dddddddddddddddddddddddddddddddddddddd
+              </td>
+
+              <td>
+                <div class="thumbBox">
+                  <i class="bi bi-images"></i>
+                </div>
+              </td>
+
+              <td class="text-end">
+                <button class="icon-btn icon-edit me-2" type="button" aria-label="Edit">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="icon-btn icon-del" type="button" aria-label="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer / Pagination -->
+    <div class="aTable-foot">
+      <div class="text-muted fw-semibold">Showing 1–1 of 1</div>
+
+      <nav aria-label="pagination">
+        <ul class="pagination mb-0 pagX">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
             </a>
-          </div>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
 
-          <!-- Search -->
-          <div class="articles-tools">
-            <div class="searchbox">
-              <i class="bi bi-search"></i>
-              <input id="searchInput" type="text" placeholder="Search articles..." />
-            </div>
-          </div>
+  </div>
 
-          <!-- Grid -->
-          <div class="row g-4" id="articlesGrid">
-
-            <!-- Card 1 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="dodo kon khmer">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=1">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
-
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">dodo</h5>
-                    <p class="cardX-desc">dddddddddddddddddddddddddddddddddddddddddddddd</p>
-                  </div>
-
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Kon Khmer</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="kkkkk chou youra">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=2">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
-
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">kkkkk</h5>
-                    <p class="cardX-desc">hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh hhh</p>
-                  </div>
-
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Chou Youra</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="kimhak siz kim hak">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=3">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
-
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">Kimhak siz</h5>
-                    <p class="cardX-desc">jddghsjkavbhkjdcxlkhdvlksmc</p>
-                  </div>
-
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Kim hak</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
-
-          </div><!-- /row -->
-
-          <!-- Empty state -->
-          <div id="emptyState" class="articles-empty d-none">
-            <div class="empty-ic"><i class="bi bi-inbox"></i></div>
-            <div class="empty-title">No articles found</div>
-            <div class="empty-sub">Try a different keyword.</div>
-          </div>
-
-        </div><!-- /articles-wrap -->
-
-      </section>
+</section>
+  
     </main>
   </div><!-- /app -->
 
@@ -242,7 +221,40 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../asset/js/dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../asset/js/dashboard.js"></script>
+
+<!-- ===== JS (optional demo: fill edit/delete modals) ===== -->
+<script>
+  const editModal = document.getElementById("editCategoryModal");
+  editModal?.addEventListener("show.bs.modal", (e) => {
+    const btn = e.relatedTarget;
+    document.getElementById("editCategoryId").value = btn.getAttribute("data-id");
+    document.getElementById("editCategoryName").value = btn.getAttribute("data-name");
+  });
+
+  const delModal = document.getElementById("deleteCategoryModal");
+  delModal?.addEventListener("show.bs.modal", (e) => {
+    const btn = e.relatedTarget;
+    document.getElementById("deleteCategoryId").value = btn.getAttribute("data-id");
+    const name = btn.getAttribute("data-name");
+    document.getElementById("deleteCatName").textContent = name;
+  });
+
+  // Demo buttons (replace with API calls)
+  document.getElementById("btnCreateCategory")?.addEventListener("click", () => {
+    const name = document.getElementById("createCategoryName").value.trim();
+    if(!name) return;
+    alert("Create: " + name);
+  });
+
+  document.getElementById("btnUpdateCategory")?.addEventListener("click", () => {
+    alert("Update: " + document.getElementById("editCategoryName").value);
+  });
+
+  document.getElementById("btnDeleteCategory")?.addEventListener("click", () => {
+    alert("Deleted: " + document.getElementById("deleteCatName").textContent);
+  });
+</script>
 </body>
 </html>

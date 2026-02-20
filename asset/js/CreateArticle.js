@@ -1,8 +1,10 @@
+//Youra
 // Get elements (NOT value)
 let GetTitle = document.getElementById("title");
 let GetCategorySelect = document.getElementById("categorySelect");
 let GetThumbnail = document.getElementById("thumbnail");
 let GetContent = document.getElementById("content");
+let Token = localStorage.getItem("token");
 
 // Error elements
 let ErrorTitle = document.getElementById("titleError");
@@ -61,7 +63,7 @@ selectCategory = () => {
         GetContent.classList.add("is-valid");
         ErrorContent.innerText = "";
     }
-
+    StorArticles();
   
 }
 backArticles=()=>{
@@ -69,5 +71,40 @@ backArticles=()=>{
 }
 
 CreateArticles=()=>{
-    
+   fetch("https://blogs2.csm.linkpc.net/api/v1/categories")
+   .then(res => res.json())
+   .then(datas => {
+      //  console.log(data);
+      let CateNmae=datas.data.items;
+        CateNmae.forEach(category => {
+           // console.log(category.name);
+            let Cate=
+                `
+                    <option>${category.name}</option>
+                              
+                `;
+                GetCategorySelect.innerHTML+=Cate;
+        });
+   })
+}
+CreateArticles();
+StorArticles=()=>{
+fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer Token " 
+        },
+        body: JSON.stringify({
+            title: GetTitle.value,
+            category_id: GetCategorySelect.value,
+            content:GetContent.value,
+            thumbnail:GetThumbnail.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        CreateArticles();
+        console.log(data);
+    });
 }

@@ -4,7 +4,7 @@ let GetTitle = document.getElementById("title");
 let GetCategorySelect = document.getElementById("categorySelect");
 let GetThumbnail = document.getElementById("thumbnail");
 let GetContent = document.getElementById("content");
-let Token = localStorage.getItem("token");
+let Token = localStorage.getItem("token") || sessionStorage.getItem("token"); 
 
 // Error elements
 let ErrorTitle = document.getElementById("titleError");
@@ -93,7 +93,7 @@ fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer Token " 
+            "Authorization": `Bearer ${Token} `
         },
         body: JSON.stringify({
             title: GetTitle.value,

@@ -1,5 +1,6 @@
 //Youra
-// Get elements (NOT value)
+// Get elements 
+let GetArticleForm = document.getElementById("articleForm");
 let GetTitle = document.getElementById("title");
 let GetCategorySelect = document.getElementById("categorySelect");
 let GetThumbnail = document.getElementById("thumbnail");
@@ -50,7 +51,9 @@ selectCategory = () => {
 }
 
  mainAction =(e)=> {
+
     e.preventDefault();
+    GetArticleForm .innerHTML="";
 
     usrTitleInput();
     selectCategory();
@@ -78,6 +81,7 @@ CreateArticles=()=>{
       //  console.log(data);
     
       let CateNmae=datas.data.items;
+    
         CateNmae.forEach(key => {
            // console.log(category.name);
             let Cate=

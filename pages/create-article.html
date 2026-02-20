@@ -1,4 +1,4 @@
-<!doctype html>
+\<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -7,7 +7,6 @@
 
   <link rel="stylesheet" href="../asset/css/dashboard.css">
 
-  <!-- Bootstrap + Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -17,7 +16,7 @@
 
   <div class="app">
 
-    <!-- SIDEBAR -->
+
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="logo"><i class="bi bi-person-fill"></i></div>
@@ -28,14 +27,14 @@
 
       <nav class="d-grid gap-2">
 
-        <a class="nav-pill active" href="dashboard.html">
+        <a class="nav-pill" href="dashboard.html">
           <span class="ic"><i class="bi bi-speedometer2"></i></span>
           <span class="label flex-grow-1">Dashboard</span>
         </a>
 
         <!-- My Articles (collapsible) -->
         <button
-          class="nav-pill w-100 text-start"
+          class="nav-pill w-100 text-start active"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#articlesMenu"
@@ -50,7 +49,7 @@
         <div class="collapse show" id="articlesMenu">
           <div class="submenu">
             <a class="" href="all-article.html">All Articles</a>
-            <a href="create-article.html">Create Article</a>
+            <a href="create-article.html" class="active">Create Article</a>
           </div>
         </div>
 
@@ -72,9 +71,8 @@
       </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
-      <!-- TOPBAR -->
+  
       <div class="topbar">
         <div class="title-wrap">
           <button class="hamburger" type="button" id="btnToggleSidebar" aria-label="Toggle sidebar">
@@ -112,116 +110,98 @@
         </div>
       </div>
 
-      <!-- CONTENT -->
+
       <section class="content-surface">
 
-        <div class="articles-wrap">
+  <div class="create-wrap">
+   
+    <div class="create-head">
+      <div>
+        <h2 class="create-title">Article Create</h2>
+        <div class="create-sub">Fill the form to publish a new article.</div>
+      </div>
 
-          <!-- Header -->
-          <div class="articles-head">
-            <div>
-              <h2 class="articles-title">All articles</h2>
-              <div class="articles-sub">Manage, search and open your articles.</div>
-            </div>
+      <a href="all-articles.html" class="btn btn-light back-btn">
+        <i class="bi bi-arrow-left me-2"></i> Back to Articles
+      </a>
+    </div>
 
-            <a class="btn btn-create" href="create-article.html">
-              <i class="bi bi-plus-circle me-2"></i> Create New Article
-            </a>
+    <form id="articleForm" class="create-form" novalidate>
+
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Title <span class="text-danger">*</span></label>
+
+        <div class="field-wrap">
+          <input  id="title" onkeyup="usrTitleInput()" type="text" class="form-control formX" placeholder="Enter title..." required>
+          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+        </div>
+
+        <div class="invalid-feedback" id="titleError">Title is required</div>
+      </div>
+
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+
+        <div class="field-wrap">
+          <select id="categorySelect" onchange="selectCategory()" class="form-select formX" required>
+            <option value="">Select category</option>
+            
+            <option>Education</option>
+          </select>
+          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+        </div>
+
+        <div  class="invalid-feedback" id="categoryError">Category is required</div>
+      </div>
+
+      <!-- Thumbnail -->
+      <!-- <div class="mb-3">
+        <label class="form-label fw-bold">Thumbnail</label>
+
+        <div class="thumb-row">
+          <input id="thumbnail" type="file" class="form-control formX" accept="image/*">
+          <div class="thumb-preview" id="thumbPreview">
+            <i class="bi bi-image"></i>
+            <span>Preview</span>
           </div>
+        </div>
 
-          <!-- Search -->
-          <div class="articles-tools">
-            <div class="searchbox">
-              <i class="bi bi-search"></i>
-              <input id="searchInput" type="text" placeholder="Search articles..." />
-            </div>
-          </div>
+        <div class="text-muted fw-semibold mt-2" style="font-size:.9rem">
+          Recommended: JPG/PNG, 1200×630 or similar.
+        </div>
+      </div> -->
 
-          <!-- Grid -->
-          <div class="row g-4" id="articlesGrid">
+  
+      <div class="mb-3">
+        <label class="form-label fw-bold">Content <span class="text-danger">*</span></label>
 
-            <!-- Card 1 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="dodo kon khmer">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=1">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
+        <div class="field-wrap textarea-wrap">
+          <textarea id="content" class="form-control formX" rows="9" placeholder="Write content here..." required></textarea>
+          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+        </div>
 
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">dodo</h5>
-                    <p class="cardX-desc">dddddddddddddddddddddddddddddddddddddddddddddd</p>
-                  </div>
+        <div  class="invalid-feedback" id="contentError">Content is required</div>
+      </div>
 
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Kon Khmer</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
+   
+      <div class="create-actions">
+        <a href="all-articles.html"  onclick="backArticles()" class="btn btn-light back-btn2">
+          <i class="bi bi-arrow-left me-2"></i> Back to Articles
+        </a>
 
-            <!-- Card 2 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="kkkkk chou youra">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=2">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
+        <button type="submit" onclick="mainAction(event)" class="btn btn-publish">
+          <i class="bi bi-send me-2"></i> Publish Now
+        </button>
+      </div>
 
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">kkkkk</h5>
-                    <p class="cardX-desc">hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh hhh</p>
-                  </div>
+    </form>
+  </div>
 
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Chou Youra</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="col-12 col-md-6 col-xl-4 article-item" data-title="kimhak siz kim hak">
-              <a class="text-decoration-none text-reset" href="article-detail.html?id=3">
-                <article class="cardX h-100">
-                  <div class="cardX-thumb">
-                    <div class="cardX-icon"><i class="bi bi-images"></i></div>
-                  </div>
-
-                  <div class="cardX-body">
-                    <h5 class="cardX-title">Kimhak siz</h5>
-                    <p class="cardX-desc">jddghsjkavbhkjdcxlkhdvlksmc</p>
-                  </div>
-
-                  <div class="cardX-footer">
-                    <div class="cardX-avatar"><i class="bi bi-person-fill"></i></div>
-                    <div class="cardX-author">Kim hak</div>
-                    <div class="cardX-arrow"><i class="bi bi-chevron-right"></i></div>
-                  </div>
-                </article>
-              </a>
-            </div>
-
-          </div><!-- /row -->
-
-          <!-- Empty state -->
-          <div id="emptyState" class="articles-empty d-none">
-            <div class="empty-ic"><i class="bi bi-inbox"></i></div>
-            <div class="empty-title">No articles found</div>
-            <div class="empty-sub">Try a different keyword.</div>
-          </div>
-
-        </div><!-- /articles-wrap -->
-
-      </section>
+</section>
     </main>
-  </div><!-- /app -->
-
-  <!-- ✅ Logout Confirm Modal (MUST be outside grid/section) -->
+  </div>
   <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow" style="border-radius:18px;">
@@ -244,5 +224,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../asset/js/dashboard.js"></script>
+  <script src="../asset/js/CreateArticle.js"></script>
+
+
+
+
+
+  
 </body>
 </html>

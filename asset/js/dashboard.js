@@ -1,122 +1,77 @@
 
-    // ===== Auth guard =====
-    const token = localStorage.getItem("token");
-    if (!token) window.location.href = "../index.html";
-
+    // Sidebar toggle: Desktop collapse + Mobile drawer
     const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menuToggle");
-    const articleToggle = document.getElementById("articleToggle");
-    const articleSub = document.getElementById("articleSub");
-    const pageTitle = document.getElementById("pageTitle");
+    const btnToggle = document.getElementById("btnToggleSidebar");
+    const backdrop = document.getElementById("backdrop");
 
-    const pages = ["dashboard", "all", "create", "category", "profile"];
+    const mq = window.matchMedia("(max-width: 992px)");
+    const isMobile = () => mq.matches;
 
-    const titles = {
-      dashboard: "Overview",
-      all: "All Articles",
-      create: "Create Article",
-      category: "Categories",
-      profile: "Profile",
-    };
+    function openMobileSidebar(){
+      sidebar.classList.add("is-open");
+      backdrop.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+    function closeMobileSidebar(){
+      sidebar.classList.remove("is-open");
+      backdrop.classList.remove("show");
+      document.body.style.overflow = "";
+    }
+    function toggleDesktopSidebar(){
+      sidebar.classList.toggle("is-collapsed");
+    }
 
-    // Sidebar Toggle
-    menuToggle.addEventListener("click", () => {
-      if (window.innerWidth > 991) sidebar.classList.toggle("collapsed");
-      else sidebar.classList.toggle("mobile-show");
+    btnToggle.addEventListener("click", () => {
+      if (isMobile()) {
+        sidebar.classList.contains("is-open") ? closeMobileSidebar() : openMobileSidebar();
+      } else {
+        toggleDesktopSidebar();
+      }
     });
 
-    // Sub-menu Toggle
-    articleToggle.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (sidebar.classList.contains("collapsed")) sidebar.classList.remove("collapsed");
-      const isOpen = articleSub.classList.toggle("open");
-      articleToggle.querySelector(".chevron").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
-    });
+    backdrop.addEventListener("click", closeMobileSidebar);
+    mq.addEventListener("change", closeMobileSidebar);
 
-    function showPage(key) {
-      // show/hide page
-      pages.forEach(p => {
-        document.getElementById("page-" + p).classList.toggle("show", p === key);
+    // Caret rotate for collapse menu
+    const articlesBtn = document.querySelector('[data-bs-target="#articlesMenu"]');
+    const articlesMenu = document.getElementById("articlesMenu");
+    if (articlesBtn && articlesMenu) {
+      const caret = articlesBtn.querySelector(".bi-chevron-down");
+      articlesMenu.addEventListener("shown.bs.collapse", () => caret?.classList.add("rotate-180"));
+      articlesMenu.addEventListener("hidden.bs.collapse", () => caret?.classList.remove("rotate-180"));
+      if (articlesMenu.classList.contains("show")) caret?.classList.add("rotate-180");
+    }
+
+    // Logout modal (Logout / Cancel)
+    const logoutBtns = document.querySelectorAll(".logout-trigger");
+    const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+
+    logoutBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        logoutModal.show();
       });
-
-      // title
-      pageTitle.textContent = titles[key] || "Overview";
-
-      // active state
-      document.querySelectorAll(".nav-itemx, .nav-sub a").forEach(el => el.classList.remove("active"));
-
-      // set active for main or sub
-      const main = document.querySelector(`.nav-itemx[data-nav="${key}"]`);
-      const sub = document.querySelector(`.nav-sub a[data-nav="${key}"]`);
-
-      if (main) {
-        main.classList.add("active");
-        // close submenu if click non-article page
-        if (key !== "all" && key !== "create") {
-          articleSub.classList.remove("open");
-          articleToggle.querySelector(".chevron").style.transform = "rotate(0deg)";
-        }
-      }
-
-      if (sub) {
-        sub.classList.add("active");
-        // keep submenu open + highlight My Articles
-        articleSub.classList.add("open");
-        articleToggle.classList.add("active");
-        articleToggle.querySelector(".chevron").style.transform = "rotate(180deg)";
-      }
-
-      // save current page
-      localStorage.setItem("activePage", key);
-
-      // close mobile sidebar after click
-      if (window.innerWidth <= 991) sidebar.classList.remove("mobile-show");
-    }
-
-    // click navigation (sidebar + dropdown)
-    document.addEventListener("click", (e) => {
-      const nav = e.target.closest("[data-nav]");
-      if (!nav) return;
-      e.preventDefault();
-      const key = nav.getAttribute("data-nav");
-      if (!pages.includes(key)) return;
-      showPage(key);
     });
 
-    // quick buttons
-    document.getElementById("goCreateBtn").addEventListener("click", () => showPage("create"));
-    document.getElementById("backToAllBtn").addEventListener("click", () => showPage("all"));
-
-    // fake create article submit
-    document.getElementById("createForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("Published! (demo)");
-      showPage("all");
-    });
-
-    // fake profile submit
-    document.getElementById("profileForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const fn = document.getElementById("firstName").value.trim();
-      const ln = document.getElementById("lastName").value.trim();
-      const em = document.getElementById("email").value.trim();
-      const av = document.getElementById("avatarUrl").value.trim();
-
-      if (fn || ln) document.getElementById("userProfile").textContent = (fn + " " + ln).trim();
-      if (em) document.getElementById("profileEmail").textContent = em;
-      if (av) document.getElementById("avatarUser").src = av;
-
-      alert("Saved! (demo)");
-    });
-
-    // logout
-    function doLogout() {
+    document.getElementById("confirmLogout").addEventListener("click", () => {
       localStorage.removeItem("token");
-      window.location.href = "../index.html";
-    }
-    document.getElementById("logoutBtn").addEventListener("click", (e) => { e.preventDefault(); doLogout(); });
-    document.getElementById("logoutBtn2").addEventListener("click", (e) => { e.preventDefault(); doLogout(); });
+      sessionStorage.clear();
+    });
 
-    // init page
-    const saved = localStorage.getItem("activePage");
-    showPage(pages.includes(saved) ? saved : "dashboard");
+    // Search filter (optional)
+    const searchInput = document.getElementById("searchInput");
+    const items = Array.from(document.querySelectorAll(".article-item"));
+    const emptyState = document.getElementById("emptyState");
+
+    function applyFilter(){
+      const q = (searchInput.value || "").trim().toLowerCase();
+      let visible = 0;
+      items.forEach(it => {
+        const hay = (it.getAttribute("data-title") || "").toLowerCase();
+        const show = hay.includes(q);
+        it.classList.toggle("d-none", !show);
+        if(show) visible++;
+      });
+      emptyState.classList.toggle("d-none", visible !== 0);
+    }
+    searchInput?.addEventListener("input", applyFilter);

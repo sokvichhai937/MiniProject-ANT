@@ -1,96 +1,150 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../asset/css/dashboard.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../asset/css/dashboard.css">
 
-  </head>
-  
-  
-  <body>
-    <div class="layout">
-      <aside class="sidebar" id="sidebar">
-        <div class="brand">
-          <div class="brand-badge"><i class="fa-solid fa-user"></i></div>
-          <div>
-            <h2 class="h5 m-0 fw-bold">Admin</h2>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+ 
+</head>
+
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-badge"><i class="fa-solid fa-user"></i></div>
+        <div>
+          <h2 class="h5 m-0 fw-bold">Admin</h2>
+        </div>
+      </div>
+
+      <div class="section-label">Menu</div>
+
+      <nav class="flex-grow-1">
+        <a class="nav-itemx active" href="#" data-nav="dashboard">
+          <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+          <span class="label">Dashboard</span>
+        </a>
+
+        <div class="nav-group">
+          <a class="nav-itemx" href="javascript:void(0)" id="articleToggle">
+            <span class="nav-icon"><i class="fa-regular fa-file-lines"></i></span>
+            <span class="label">My Articles</span>
+            <i class="fa-solid fa-chevron-down ms-auto chevron" style="font-size: 10px; transition: 0.3s;"></i>
+          </a>
+          <div class="nav-sub" id="articleSub">
+            <a href="#" data-nav="all">All Articles</a>
+            <a href="#" data-nav="create">Create Article</a>
           </div>
         </div>
 
-        <div class="section-label">Menu</div>
+        <a class="nav-itemx" href="#" data-nav="category">
+          <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
+          <span class="label">Categories</span>
+        </a>
+      </nav>
 
-        <nav class="flex-grow-1">
-          <a class="nav-itemx active" href="#" data-nav="dashboard">
-            <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
-            <span class="label">Dashboard</span>
-          </a>
+      <div class="mt-auto">
+        <hr style="opacity: 0.1">
+        <a class="nav-itemx text-danger" href="#" id="logoutBtn">
+          <span class="nav-icon text-danger"><i class="fa-solid fa-right-from-bracket"></i></span>
+          <span class="label">Logout</span>
+        </a>
+      </div>
+    </aside>
 
-          <div class="nav-group">
-            <a class="nav-itemx" href="javascript:void(0)" id="articleToggle">
-              <span class="nav-icon"><i class="fa-regular fa-file-lines"></i></span>
-              <span class="label">My Articles</span>
-              <i class="fa-solid fa-chevron-down ms-auto chevron" style="font-size: 10px; transition: 0.3s;"></i>
-            </a>
-            <div class="nav-sub" id="articleSub">
-              <a href="#" data-nav="all">All Articles</a>
-              <a href="#" data-nav="create">Create Article</a>
+    <div class="main-area">
+      <header class="top-navbar">
+        <button class="btn border-0 p-0 me-3" id="menuToggle">
+          <i class="fa-solid fa-bars-staggered fs-4"></i>
+        </button>
+
+        <h5 class="m-0 fw-bold d-none d-md-block" id="pageTitle">Overview</h5>
+
+        <div class="ms-auto dropdown">
+          <div class="userbox dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <img class="avatar" id="avatarUser" src="https://i.pravatar.cc/80?img=12" alt="avatar" />
+            <div class="d-none d-sm-block">
+              <div style="font-weight: 1000; line-height: 1.1" id="userProfile">User Admin</div>
             </div>
           </div>
 
-          <a class="nav-itemx" href="#" data-nav="category">
-            <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
-            <span class="label">Categories</span>
-          </a>
-
-        </nav>
-
-        <div class="mt-auto">
-          <hr style="opacity: 0.1">
-          <a class="nav-itemx text-danger" href="#">
-            <span class="nav-icon text-danger"><i class="fa-solid fa-right-from-bracket"></i></span>
-            <span class="label">Logout</span>
-          </a>
+          <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-2" aria-labelledby="profileDropdown">
+             <li>
+              <a class="dropdown-item" href="#" data-nav="profile">
+                <i class="fa-regular fa-user me-2"></i> Profile
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" style="opacity: 0.1;"></li>
+            <li>
+              <a class="dropdown-item text-danger" href="#" id="logoutBtn2">
+                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+              </a>
+            </li>
+          </ul>
         </div>
-      </aside>
+      </header>
 
-      <div class="main-area">
-        <header class="top-navbar">
-          <button class="btn border-0 p-0 me-3" id="menuToggle">
-            <i class="fa-solid fa-bars-staggered fs-4"></i>
-          </button>
-          
-          <h5 class="m-0 fw-bold d-none d-md-block">Overview</h5>
-          
-          <div class="ms-auto dropdown">
-            <div class="userbox dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-              <img class="avatar" id="avatarUser" src="https://i.pravatar.cc/80?img=12" alt="avatar" />
-              <div class="d-none d-sm-block">
-                <div style="font-weight: 1000; line-height: 1.1" id="userProfile">User Admin</div>
+      <main class="p-4">
 
-            <ul class="dropdown-menu dropdown-menu-end glass-dropdown mt-2" aria-labelledby="profileDropdown">
-              <li>
-                <a class="dropdown-item" href="#"><i class="fa-regular fa-user me-2"></i> Profile</a>
-              </li>
-              <li><hr class="dropdown-divider" style="opacity: 0.1;"></li>
-              <li>
-                <a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
-              </li>
-            </ul>
+        <!-- ===== DASHBOARD PAGE ===== -->
+        <section class="page show" id="page-dashboard">
+          <div class="glass-card p-4">
+            <h1 class="fw-bold m-0 h2">Dashboard</h1>
+            <p class="text-muted small m-0">Welcome back! Quick overview.</p>
+
+            <div class="row g-3 mt-3">
+              <div class="col-md-4">
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="nav-icon"><i class="fa-regular fa-file-lines"></i></div>
+                    <div>
+                      <div class="fw-bold">Articles</div>
+                      <div class="text-muted small">12 total</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="nav-icon"><i class="fa-solid fa-tags"></i></div>
+                    <div>
+                      <div class="fw-bold">Categories</div>
+                      <div class="text-muted small">5 total</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="nav-icon"><i class="fa-regular fa-user"></i></div>
+                    <div>
+                      <div class="fw-bold">Profile</div>
+                      <div class="text-muted small">Manage account</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-        </header>
+        </section>
 
-        <main class="p-4">
+        <!-- ===== ALL ARTICLES PAGE ===== -->
+        <section class="page" id="page-all">
           <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
               <div>
                 <h1 class="fw-bold m-0 h2">All Articles</h1>
                 <p class="text-muted small m-0">Manage and publish your blog content</p>
               </div>
-              <button class="btn btn-primary  border-0 px-4 py-2 fw-bold createNewArticle" style="border-radius: 12px;">
+              <button class="btn btn-primary border-0 px-4 py-2 fw-bold createNewArticle" style="border-radius: 12px;" id="goCreateBtn">
                 + Create New Article
               </button>
             </div>
@@ -117,12 +171,13 @@
                   </div>
                 </div>
               </div>
+
               <div class="col-12 col-md-6 col-xl-4">
                 <div class="card border-0 glass-card h-100 overflow-hidden">
                   <img src="https://picsum.photos/400/250?random=2" class="card-img-top" alt="post" style="height: 180px; object-fit: cover;">
                   <div class="card-body">
                     <h5 class="fw-bold">Modern Web Architecture</h5>
-                    <p class="text-muted small">Building scalable applications in 2026 using Gemini 3...</p>
+                    <p class="text-muted small">Building scalable applications in 2026 using modern stacks...</p>
                     <div class="d-flex align-items-center gap-2 mt-3">
                       <div class="nav-icon" style="width: 28px; height: 28px; font-size: 12px;">
                         <i class="fa-solid fa-user"></i>
@@ -132,81 +187,165 @@
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
-        </main>
-      </div>
+        </section>
+
+        <!-- ===== CREATE ARTICLE PAGE ===== -->
+        <section class="page" id="page-create">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+              <div>
+                <h1 class="fw-bold m-0 h2">Create Article</h1>
+                <p class="text-muted small m-0">Write a new post and publish it</p>
+              </div>
+              <button class="btn btn-outline-secondary fw-bold" style="border-radius: 12px;" id="backToAllBtn">
+                Back to All Articles
+              </button>
+            </div>
+
+            <form class="row g-3 mt-2" id="createForm">
+              <div class="col-12">
+                <label class="fw-bold mb-1">Title</label>
+                <input class="form-control searchbar" id="postTitle" placeholder="Article title..." />
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">Category</label>
+                <select class="form-select searchbar" id="postCategory">
+                  <option>UI/UX</option>
+                  <option>Web Dev</option>
+                  <option>News</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">Thumbnail URL</label>
+                <input class="form-control searchbar" id="postThumb" placeholder="https://..." />
+              </div>
+
+              <div class="col-12">
+                <label class="fw-bold mb-1">Content</label>
+                <textarea class="form-control searchbar" rows="8" id="postContent" placeholder="Write something..."></textarea>
+              </div>
+
+              <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary fw-bold createNewArticle" style="border-radius: 12px;">
+                  Publish
+                </button>
+                <button type="reset" class="btn btn-light fw-bold" style="border-radius: 12px;">
+                  Clear
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== CATEGORIES PAGE ===== -->
+        <section class="page" id="page-category">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+              <div>
+                <h1 class="fw-bold m-0 h2">Categories</h1>
+                <p class="text-muted small m-0">Create and manage categories</p>
+              </div>
+              <button class="btn btn-primary border-0 fw-bold createNewArticle" style="border-radius:12px;" id="addCategoryBtn">
+                + Add Category
+              </button>
+            </div>
+
+            <div class="row g-3 mt-2">
+              <div class="col-md-6">
+                <input class="form-control searchbar" id="categoryName" placeholder="New category name..." />
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary w-100 fw-bold createNewArticle" style="border-radius:12px;" id="saveCategoryBtn">
+                  Save
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-4 table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="categoryTable">
+                  <tr>
+                    <td>1</td>
+                    <td>UI/UX</td>
+                    <td class="text-end">
+                      <button class="btn btn-sm btn-light fw-bold" style="border-radius:10px;">Edit</button>
+                      <button class="btn btn-sm btn-danger fw-bold" style="border-radius:10px;">Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Web Dev</td>
+                    <td class="text-end">
+                      <button class="btn btn-sm btn-light fw-bold" style="border-radius:10px;">Edit</button>
+                      <button class="btn btn-sm btn-danger fw-bold" style="border-radius:10px;">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ===== PROFILE PAGE ===== -->
+        <section class="page" id="page-profile">
+          <div class="glass-card p-4">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <img src="https://i.pravatar.cc/120?img=12" class="rounded-circle" style="width:90px;height:90px;object-fit:cover;border:3px solid #fff;">
+              <div>
+                <h1 class="fw-bold m-0 h2" id="profileName">Admin User</h1>
+                <p class="text-muted small m-0" id="profileEmail">admin@example.com</p>
+              </div>
+            </div>
+
+            <hr style="opacity:.1" class="my-4">
+
+            <form class="row g-3" id="profileForm">
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">First Name</label>
+                <input class="form-control searchbar" id="firstName" placeholder="First name" />
+              </div>
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">Last Name</label>
+                <input class="form-control searchbar" id="lastName" placeholder="Last name" />
+              </div>
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">Email</label>
+                <input class="form-control searchbar" id="email" placeholder="Email" />
+              </div>
+              <div class="col-md-6">
+                <label class="fw-bold mb-1">Avatar URL</label>
+                <input class="form-control searchbar" id="avatarUrl" placeholder="https://..." />
+              </div>
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary fw-bold createNewArticle" style="border-radius:12px;">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </section>
+
+      </main>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      const sidebar = document.getElementById("sidebar");
-      const menuToggle = document.getElementById("menuToggle");
-      const articleToggle = document.getElementById("articleToggle");
-      const articleSub = document.getElementById("articleSub");
+  <script src="../asset/js/dashboard.js"></script>
 
-      // Sidebar Toggle Logic
-      menuToggle.addEventListener("click", () => {
-        if (window.innerWidth > 991) {
-          sidebar.classList.toggle("collapsed");
-        } else {
-          sidebar.classList.toggle("mobile-show");
-        }
-      });
-
-      // Sub-menu Toggle Logic
-      articleToggle.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (sidebar.classList.contains("collapsed")) {
-          sidebar.classList.remove("collapsed");
-        }
-        const isOpen = articleSub.classList.toggle("open");
-        articleToggle.querySelector(".chevron").style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
-      });
-
-      // Active State Management
-      const navLinks = document.querySelectorAll(".nav-itemx, .nav-sub a");
-      navLinks.forEach(link => {
-        link.addEventListener("click", function() {
-          if (this.id === "articleToggle") return;
-
-          navLinks.forEach(l => l.classList.remove("active"));
-          this.classList.add("active");
-
-          // Auto-close sub-menu if clicking a main-level item
-          if (!this.closest(".nav-group")) {
-            articleSub.classList.remove("open");
-            articleToggle.querySelector(".chevron").style.transform = "rotate(0deg)";
-          }
-        });
-      });
-
-
-
-
-      // ប្រសិនបើគ្មាន Token របស់ User ឬ User មិនទាន់ Login វានឹងបង្ហាញ page Login
-      const token = localStorage.getItem('token');
-      if(!token){
-        window.location.href = '../index.html'
-      }
-
-      // get token for display info
-      let userProfile = document.getElementById('userProfile');
-      fetch('https://blogs2.csm.linkpc.net/api/v1/auth/register', {
-        headers: {
-          'Authorization' : `Bearer ${token}`
-        }
-      }).then(res => res.json()).then(authorization =>{
-        console.log(authorization);
-        userProfile.innerHTML = authorization.data.name;
-      })
-      .catch(err => {
-        alert(err);
-      })
-
-
-      
-
-    </script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

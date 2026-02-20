@@ -63,9 +63,10 @@ selectCategory = () => {
         GetContent.classList.add("is-valid");
         ErrorContent.innerText = "";
     }
-    StorArticles();
+    StoreArticles();
   
 }
+
 backArticles=()=>{
 
 }
@@ -75,12 +76,15 @@ CreateArticles=()=>{
    .then(res => res.json())
    .then(datas => {
       //  console.log(data);
+    
       let CateNmae=datas.data.items;
-        CateNmae.forEach(category => {
+        CateNmae.forEach(key => {
            // console.log(category.name);
             let Cate=
                 `
-                    <option>${category.name}</option>
+                   <option value="${key.id}">
+                        ${key.name}
+                    </option>
                               
                 `;
                 GetCategorySelect.innerHTML+=Cate;
@@ -88,7 +92,7 @@ CreateArticles=()=>{
    })
 }
 CreateArticles();
-StorArticles=()=>{
+StoreArticles=()=>{
 fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
         method: "POST",
         headers: {
@@ -97,9 +101,9 @@ fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
         },
         body: JSON.stringify({
             title: GetTitle.value,
-            category_id: GetCategorySelect.value,
+            categoryId:Number(GetCategorySelect.value) ,
             content:GetContent.value,
-            thumbnail:GetThumbnail.value
+           // thumbnail:GetThumbnail.value
         })
     })
     .then(res => res.json())

@@ -52,12 +52,13 @@ selectCategory = () => {
 
  mainAction =(e)=> {
 
+
     e.preventDefault();
-    GetArticleForm .innerHTML="";
+  
 
     usrTitleInput();
     selectCategory();
-
+    //contant error
     if (GetContent.value.trim() === "") {
         GetContent.classList.add("is-invalid");
         ErrorContent.innerText = "Content required!";
@@ -67,6 +68,7 @@ selectCategory = () => {
         ErrorContent.innerText = "";
     }
     StoreArticles();
+    GetArticleForm.reset();
   
 }
 
@@ -74,7 +76,7 @@ backArticles=()=>{
 
 }
 
-CreateArticles=()=>{
+GetArticles=()=>{
    fetch("https://blogs2.csm.linkpc.net/api/v1/categories")
    .then(res => res.json())
    .then(datas => {
@@ -95,7 +97,7 @@ CreateArticles=()=>{
         });
    })
 }
-CreateArticles();
+GetArticles();
 StoreArticles=()=>{
 fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
         method: "POST",
@@ -112,7 +114,7 @@ fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
     })
     .then(res => res.json())
     .then(data => {
-        CreateArticles();
+        GetArticles();
         console.log(data);
     });
 }

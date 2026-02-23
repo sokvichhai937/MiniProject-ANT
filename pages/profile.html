@@ -314,9 +314,9 @@
     <img id="avatarImg" src="https://i.pravatar.cc/200?img=12" alt="avatar">
   </div>
 
-  <button class="pro-ic pro-del" type="button" title="Remove photo">
+ <button class="pro-ic pro-del" id="btnDelAvatar" title="Remove photo">
     <i class="bi bi-trash"></i>
-  </button>
+</button>
 
   <label class="pro-ic pro-up" for="avatarInput" title="Upload photo">
     <i class="bi bi-camera"></i>
@@ -334,7 +334,7 @@
 
         <!-- Button -->
         <div class="pro-actions">
-          <button class="btn pro-btn" id="btnEdit" type="button">
+          <button class="btn pro-btn" id="btnEdit" onclick="btnedit()" type="button">
             <i class="bi bi-pencil-square me-2"></i> Edit Profile
           </button>
         </div>
@@ -389,95 +389,101 @@
 
           <div class="d-flex justify-content-center gap-3">
             <button class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-            <a href="logout.html" class="btn btn-danger px-4" id="confirmLogout">Logout</a>
+            <a href="../index.html" class="btn btn-danger px-4" id="confirmLogout">Logout</a>
           </div>
         </div>
       </div>
     </div>
   </div>
+  
+  
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../asset/js/dashboard.js"></script>
-  <script>
-    //JS (edit mode + avatar preview) 
+  <script src="../asset/js/script.js"></script>
 
-  const btnEdit = document.getElementById("btnEdit");
-  const btnCancel = document.getElementById("btnCancel");
-  const saveRow = document.getElementById("saveRow");
-  const form = document.getElementById("profileForm");
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script>
+ 
+// --- ការកំណត់ API ---
+const API_BASE_URL = 'https://blogs2.csm.linkpc.net/api/v1';
+const Token = localStorage.getItem("token");
 
-  const firstName = document.getElementById("firstName");
-  const lastName = document.getElementById("lastName");
-  const email = document.getElementById("email");
+const headers = {
+    'Authorization': `Bearer ${Token}`,
+    'Accept': 'application/json'
+};
 
-  const displayName = document.getElementById("displayName");
-  const displayEmail = document.getElementById("displayEmail");
+// --- ចាប់យក Elements (បន្ថែមការឆែក Null ដើម្បីការពារ error) ---
+const avatarImg = document.getElementById("avatarImg");
+const avatarInput = document.getElementById("avatarInput");
+const displayName = document.getElementById("displayName");
+const displayEmail = document.getElementById("displayEmail");
 
-  const avatarInput = document.getElementById("avatarInput");
-  const avatarImg = document.getElementById("avatarImg");
-  const delBtn = document.querySelector(".pro-del");
+// ១. មុខងារទាញទិន្នន័យ Profile (GET /auth/profile)
+async function fetchProfile() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/auth/profile`, { 
+            method: 'GET', 
+            headers: headers 
+        });
+        
+        const result = await res.json();
+        if (res.ok && result.data) {
+            const user = result.data;
+            
+            // បង្ហាញលើ Header (ដូចក្នុងរូបភាព siv punleu)
+            if(displayName) displayName.textContent = `${user.firstName} ${user.lastName}`;
+            if(displayEmail) displayEmail.textContent = user.email;
+            
+            // បំពេញក្នុង Form (Kon Khmer)
+            if(document.getElementById('firstName')) document.getElementById('firstName').value = user.firstName;
+            if(document.getElementById('lastName')) document.getElementById('lastName').value = user.lastName;
+            if(document.getElementById('email')) document.getElementById('email').value = user.email;
 
-  let backup = {
-    first: firstName.value,
-    last: lastName.value,
-    email: email.value
-  };
+            // បង្ហាញរូបភាព
+            if(user.avatar && avatarImg) avatarImg.src = user.avatar;
+        }
+    } catch (err) { console.error("Fetch Error:", err); }
+}
 
-  function setEditMode(on){
-    [firstName, lastName, email].forEach(el => {
-      el.disabled = !on;
-      el.classList.toggle("is-edit", on);
-    });
-    saveRow.style.display = on ? "flex" : "none";
-    btnEdit.innerHTML = on
-      ? '<i class="bi bi-pencil-square me-2"></i> Editing...'
-      : '<i class="bi bi-pencil-square me-2"></i> Edit Profile';
-    btnEdit.disabled = on;
-    if(on) firstName.focus();
-  }
+avatarInput.addEventListener("change", () => {
+  //https://blogs2.csm.linkpc.net/api/v1/auth/profile/avatar
+  const file = avatarInput.files[0];
+  const formData = new FormData();
+  formData.append("avatar", file);
 
-  btnEdit.addEventListener("click", () => {
-    backup = { first: firstName.value, last: lastName.value, email: email.value };
-    setEditMode(true);
-  });
+  fetch(`${API_BASE_URL}/profile/avatar`, {
+    method: "POST",
+    headers: headers,
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ok && data.data) {
+      const user = data.data;
+      if(user.avatar && avatarImg) avatarImg.src = user.avatar;
+    }
+  })
+  .catch(err => console.error("Fetch Error:", err));
+});
+//logout
 
-  btnCancel.addEventListener("click", () => {
-    firstName.value = backup.first;
-    lastName.value = backup.last;
-    email.value = backup.email;
-    setEditMode(false);
-  });
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
 
-    // update header display
-    displayName.textContent = (firstName.value + " " + lastName.value).trim();
-    displayEmail.textContent = email.value.trim();
+ 
+  
 
-    setEditMode(false);
 
-    // ✅ Replace with API update request
-    alert("Profile updated ✅ (send to API here)");
-  });
 
-  // avatar preview
-  avatarInput.addEventListener("change", () => {
-    const file = avatarInput.files && avatarInput.files[0];
-    if(!file) return;
-    const url = URL.createObjectURL(file);
-    avatarImg.src = url;
 
-    // ✅ Replace with upload API
-    // auto-save behavior
-  });
 
-  // remove avatar (demo)
-  delBtn.addEventListener("click", () => {
-    avatarImg.src = "https://i.pravatar.cc/200?img=12";
 
-    // ✅ Replace with delete avatar API
-  });
-  </script>
+
+
+// ចាប់ផ្ដើមដំណើរការ
+window.onload = fetchProfile;
+
+ </script>
 </body>
 </html>

@@ -120,3 +120,4 @@
     // init page
     const saved = localStorage.getItem("activePage");
     showPage(pages.includes(saved) ? saved : "dashboard");
+    

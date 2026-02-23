@@ -23,23 +23,4 @@ document.getElementById("confirmLogout")?.addEventListener("click", () => {
 });
 
 
-// ============ Get Profile ========================================
-function getProfile(){
-       fetch('https://blogs2.csm.linkpc.net/api/v1/auth/profile',{
-        method : 'GET',
-        headers : {
-          'Content-Type' : 'application/json',
-          'Authorization' : `Bearer ${token}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        document.getElementById('avatarUser').src = data.data.avatar;
-        document.getElementById('profileUser').textContent = data.data.firstName + " " + data.data.lastName;
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    }
-    getProfile();
+

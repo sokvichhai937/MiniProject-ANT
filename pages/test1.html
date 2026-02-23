@@ -124,9 +124,8 @@
                 <!-- ✅ add logout-trigger -->
                 <a
                   class="dropdown-item py-2 text-danger logout-trigger"
-                  href="#logoutModal"
-                  data-bs-toggle="modal"
-                  data-bs-target="#logoutModal">
+                  href="#"
+                >
                   <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
               </li>
@@ -217,7 +216,8 @@
                     </button>
                     <button
                       class="btn btn-save px-4"
-                      onclick="createCategory()">
+                      onclick="createCategory()"
+                    >
                       Save
                     </button>
                   </div>
@@ -308,7 +308,6 @@
         </section>
       </main>
     </div>
-
     <!-- /app -->
 
     <!-- ✅ Logout Confirm Modal -->
@@ -330,7 +329,7 @@
                 Cancel
               </button>
               <a
-                href=""
+                href="logout.html"
                 class="btn btn-danger px-4"
                 id="confirmLogout"
                 >Logout</a
@@ -346,7 +345,7 @@
     <script src="../asset/js/category.js"></script>
 
     <script>
-      //  TOKEN =====
+      // ===== TOKEN =====
       const token = localStorage.getItem("token");
 
       // ===== SHOW CATEGORY =====
@@ -453,11 +452,11 @@
       }
 
       // 2) confirm delete
-      let btnDeleteCategory = document.getElementById("btnDeleteCategory")
-      btnDeleteCategory.addEventListener("click", async () => {
+      document
+        .getElementById("btnDeleteCategory")
+        .addEventListener("click", async () => {
           if (!deleteId) return;
-          btnDeleteCategory.innerHTML = "Deleting...";
-          btnDeleteCategory.disabled = true;
+
           try {
             const res = await fetch(
               `https://blogs2.csm.linkpc.net/api/v1/categories/${deleteId}`,
@@ -497,19 +496,7 @@
           }
         });
 
-
-        // ===== UPDATE CATEGORY =====
-        let btnUpdateCategory = document.getElementById("btnUpdateCategory");
-        btnUpdateCategory.addEventListener("click", async () =>{
-          btnUpdateCategory.innerHTML = "Updating...";
-          btnUpdateCategory.disabled = true;
-
-          const editCategoryId = document.getElementById("editCategoryId").value;
-          const editCategoryName = document.getElementById("editCategoryName").value;
-
-         
-          
-        })
+        
     </script>
   </body>
 </html>

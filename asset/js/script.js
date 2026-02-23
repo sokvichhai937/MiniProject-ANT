@@ -18,3 +18,10 @@ document.getElementById("confirmLogout")?.addEventListener("click", () => {
   // ២. បញ្ជូនអ្នកប្រើប្រាស់ទៅកាន់ទំព័រ Login
   window.location.href = "../index.html";
 });
+(function () {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    // បើគ្មាន Token ទេ គឺមិនឱ្យនៅទំព័រនេះឡើយ
+    window.location.href = "../index.html";
+  }
+})();

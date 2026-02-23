@@ -134,10 +134,11 @@
 
         <div class="field-wrap">
           <input  id="title" onkeyup="usrTitleInput()" type="text" class="form-control formX" placeholder="Enter title..." required>
-          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+          <!-- <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span> -->
+          <div class="invalid-feedback" id="titleError"></div>
         </div>
 
-        <div class="invalid-feedback" id="titleError">Title is required</div>
+        
       </div>
 
 
@@ -150,10 +151,12 @@
             
             <option>Education</option>
           </select>
-          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+         <div class="invalid-feedback" id="categoryError"></div>
+
+          <!-- <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span> -->
         </div>
 
-        <div  class="invalid-feedback" id="categoryError">Category is required</div>
+
       </div>
 
       <!-- Thumbnail -->
@@ -179,10 +182,11 @@
 
         <div class="field-wrap textarea-wrap">
           <textarea id="content" class="form-control formX" rows="9" placeholder="Write content here..." required></textarea>
-          <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span>
+          <!-- <span class="field-ic"><i class="bi bi-exclamation-circle"></i></span> -->
+        <div  class="invalid-feedback" id="contentError"></div>
+
         </div>
 
-        <div  class="invalid-feedback" id="contentError">Content is required</div>
       </div>
 
    
@@ -226,10 +230,5 @@
   <script src="../asset/js/dashboard.js"></script>
   <script src="../asset/js/CreateArticle.js"></script>
 
-
-
-
-
-  
 </body>
 </html>

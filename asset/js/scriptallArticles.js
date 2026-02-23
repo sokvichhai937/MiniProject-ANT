@@ -16,16 +16,23 @@ fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own?search=&_page=1&_per_pa
                                     <td>${ownArt.content}</td>
                                     <td><img src="${ownArt.thumbnail}" alt="" width="100" hight="100" class="rounded-3"></td>
                                     <td>
-                                    <button class="icon-btn1 border-1 border-secondary rounded-1" onclick="editArticle(${ownArt.id})"><i class="fa-regular fa-pen-to-square text-secondary"></i></button>
-                                    <button class="icon-btn border-1 border-danger rounded-1" onclick="deleteArticle()"><i class="fa-solid fa-trash-can text-danger"></i></button>
-                                    </td>
-                                     </tr>
+                                    <button class="icon-btn1 border-1 border-secondary rounded-1">
+                                        <i class="fa-regular fa-pen-to-square text-secondary"></i>
+                                    </button>
+
+                                    <button class="icon-btn border-1 border-danger rounded-1"
+                                        onclick="openDeleteModal(${ownArt.id})">
+                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                    </button>
+                                  </td>
+                                    </tr>
                                     `
 
         })
     })
 //===========================delete====================================
 let articleIdToDelete = null;
+
 function openDeleteModal(id) {
     articleIdToDelete = id;
     document.getElementById("deleteConfirmModal").style.display = "flex";
@@ -33,7 +40,6 @@ function openDeleteModal(id) {
 
 function closeModal() {
     document.getElementById("deleteConfirmModal").style.display = "none";
-    articleIdToDelete = null;
 }
 
 function confirmDelete() {
@@ -43,18 +49,16 @@ function confirmDelete() {
         method: 'DELETE',
         headers: { 'Authorization': token }
     })
-
-    .then(res => {
-        if (res.ok) {
-            location.reload();
-        } else {
-            alert("Failed to delete article");
-        }
-    })
-
-    .catch(err => alert(err.message));
+        .then(res => {
+            if (res.ok) {
+                location.reload();
+            } else {
+                alert("Failed to delete article");
+            }
+        })
+        .catch(err => alert(err.message));
 
     closeModal();
 }
-
 //=============================edit==========================================
+

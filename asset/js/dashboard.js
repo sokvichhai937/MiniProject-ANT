@@ -58,6 +58,12 @@
       sessionStorage.clear();
     });
 
+<<<<<<< HEAD
+    // init page
+    const saved = localStorage.getItem("activePage");
+    showPage(pages.includes(saved) ? saved : "dashboard");
+    
+=======
     // Search filter (optional)
     const searchInput = document.getElementById("searchInput");
     const items = Array.from(document.querySelectorAll(".article-item"));
@@ -75,3 +81,4 @@
       emptyState.classList.toggle("d-none", visible !== 0);
     }
     searchInput?.addEventListener("input", applyFilter);
+>>>>>>> a44c2e5441a3c961e824d77b1d2abf0af9ef49af

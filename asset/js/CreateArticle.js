@@ -1,8 +1,11 @@
-// Get elements (NOT value)
+//Youra
+// Get elements 
+let GetArticleForm = document.getElementById("articleForm");
 let GetTitle = document.getElementById("title");
 let GetCategorySelect = document.getElementById("categorySelect");
 let GetThumbnail = document.getElementById("thumbnail");
 let GetContent = document.getElementById("content");
+let Token = localStorage.getItem("token") || sessionStorage.getItem("token"); 
 
 // Error elements
 let ErrorTitle = document.getElementById("titleError");
@@ -48,7 +51,9 @@ selectCategory = () => {
 }
 
  mainAction =(e)=> {
+
     e.preventDefault();
+    GetArticleForm .innerHTML="";
 
     usrTitleInput();
     selectCategory();
@@ -61,13 +66,53 @@ selectCategory = () => {
         GetContent.classList.add("is-valid");
         ErrorContent.innerText = "";
     }
-
+    StoreArticles();
   
 }
+
 backArticles=()=>{
 
 }
 
 CreateArticles=()=>{
+   fetch("https://blogs2.csm.linkpc.net/api/v1/categories")
+   .then(res => res.json())
+   .then(datas => {
+      //  console.log(data);
     
+      let CateNmae=datas.data.items;
+    
+        CateNmae.forEach(key => {
+           // console.log(category.name);
+            let Cate=
+                `
+                   <option value="${key.id}">
+                        ${key.name}
+                    </option>
+                              
+                `;
+                GetCategorySelect.innerHTML+=Cate;
+        });
+   })
+}
+CreateArticles();
+StoreArticles=()=>{
+fetch("https://blogs2.csm.linkpc.net/api/v1/articles", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Token} `
+        },
+        body: JSON.stringify({
+            title: GetTitle.value,
+            categoryId:Number(GetCategorySelect.value) ,
+            content:GetContent.value,
+           // thumbnail:GetThumbnail.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        CreateArticles();
+        console.log(data);
+    });
 }

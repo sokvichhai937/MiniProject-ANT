@@ -1,6 +1,6 @@
 /**
  * Profile Management Module
- * Features: GET, UPDATE, UPLOAD, DELETE, UI Sync, and Validation
+ * Features: GET, UPDATE, UPLOAD (with Preview), DELETE, UI Sync
  */
 
 const API_BASE_URL = 'https://blogs2.csm.linkpc.net/api/v1';
@@ -15,10 +15,9 @@ const headers = {
     'Accept': 'application/json'
 };
 
-// --- ១. មុខងារ Validation (ត្រួតពិនិត្យទិន្នន័យ) ---
+// --- ១. មុខងារ Validation ---
 function validateProfile(data) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!data.firstName || data.firstName.length < 2) {
         Swal.fire('កំហុស', 'នាមត្រកូលត្រូវមានយ៉ាងតិច ២ តួអក្សរ', 'warning');
         return false;
@@ -34,21 +33,21 @@ function validateProfile(data) {
     return true;
 }
 
-// --- ២. មុខងារ Update UI នៅគ្រប់កន្លែង ---
+// --- ២. មុខងារ Update UI នៅគ្រប់កន្លែង (Card & Topbar) ---
 function updateUserInformationUI(user) {
     const fullName = `${user.firstName} ${user.lastName}`;
 
-    // Card UI
+    // Update ក្នុង Profile Card
     const displayName = document.getElementById("displayName");
     const displayEmail = document.getElementById("displayEmail");
     if (displayName) displayName.textContent = fullName;
     if (displayEmail) displayEmail.textContent = user.email;
 
-    // Topbar UI (Update ឈ្មោះខាងលើ)
-    const topbarName = document.querySelector(".profile-pill span.fw-bold");
-    if (topbarName) {
-        topbarName.textContent = fullName;
-    }
+    // Update ក្នុង Topbar (ប្រើ ID តាម HTML របស់អ្នក)
+    const topbarName = document.getElementById("topbarName");
+    const topbarEmail = document.getElementById("topbarEmail");
+    if (topbarName) topbarName.textContent = fullName;
+    if (topbarEmail) topbarEmail.textContent = user.email;
 
     if (user.avatar) {
         updateAvatarUI(user.avatar);
@@ -58,10 +57,7 @@ function updateUserInformationUI(user) {
 // --- ៣. ទាញទិន្នន័យ Profile ---
 async function fetchProfile() {
     try {
-        const res = await fetch(`${API_BASE_URL}/profile`, {
-            method: 'GET',
-            headers: headers
-        });
+        const res = await fetch(`${API_BASE_URL}/profile`, { method: 'GET', headers: headers });
         const result = await res.json();
 
         if (res.ok && result.data) {
@@ -76,7 +72,7 @@ async function fetchProfile() {
     }
 }
 
-// --- ៤. កែប្រែព័ត៌មាន (ជាមួយ Validation) ---
+// --- ៤. កែប្រែព័ត៌មាន (Update Name & Email) ---
 function setupProfileForm() {
     const profileForm = document.getElementById("profileForm");
     if (!profileForm) return;
@@ -90,7 +86,6 @@ function setupProfileForm() {
             email: document.getElementById("email").value.trim()
         };
 
-        // ✅ ហៅមុខងារ Validation មុននឹងផ្ញើទៅ Server
         if (!validateProfile(payload)) return;
 
         const btnSave = document.getElementById("btnSave");
@@ -105,13 +100,13 @@ function setupProfileForm() {
                 body: JSON.stringify(payload)
             });
 
-            const result = await res.json();
-
             if (res.ok) {
+                updateUserInformationUI(payload); // Update UI ភ្លាមៗ
                 await Swal.fire({ icon: 'success', title: 'រក្សាទុកជោគជ័យ', timer: 1500, showConfirmButton: false });
-                window.btnedit();
-                await fetchProfile(); // Update Topbar UI
+                window.btnedit(); // បិទ Mode Edit
+                fetchProfile();   // ទាញទិន្នន័យពិតពី Server មកផ្ទៀងផ្ទាត់
             } else {
+                const result = await res.json();
                 throw new Error(result.message || "មិនអាចកែប្រែបានទេ");
             }
         } catch (err) {
@@ -123,7 +118,7 @@ function setupProfileForm() {
     });
 }
 
-// --- ៥. Upload & Delete Avatar ---
+// --- ៥. Upload Avatar (ជាមួយ Preview & Confirmation) ---
 function setupAvatarUpload() {
     const avatarInput = document.getElementById("avatarInput");
     if (!avatarInput) return;
@@ -132,37 +127,50 @@ function setupAvatarUpload() {
         const file = e.target.files[0];
         if (!file) return;
 
-        // ឆែកទំហំរូបភាព (កុំឱ្យលើស 2MB)
         if (file.size > 2 * 1024 * 1024) {
             Swal.fire('កំហុស', 'រូបភាពមិនត្រូវលើសពី 2MB ឡើយ', 'error');
             return;
         }
 
-        updateAvatarUI(URL.createObjectURL(file));
+        const previewUrl = URL.createObjectURL(file);
+        const originalUrl = document.getElementById("avatarImg").src;
+        updateAvatarUI(previewUrl); // បង្ហាញ Preview
 
-        const formData = new FormData();
-        formData.append("avatar", file);
+        const confirm = await Swal.fire({
+            title: 'ប្តូររូបភាព?',
+            text: "តើអ្នកចង់ប្រើរូបភាពថ្មីនេះមែនទេ?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'យល់ព្រម',
+            cancelButtonText: 'បោះបង់'
+        });
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/profile/avatar`, {
-                method: "POST",
-                headers: { 'Authorization': `Bearer ${Token}` },
-                body: formData
-            });
+        if (confirm.isConfirmed) {
+            const formData = new FormData();
+            formData.append("avatar", file);
 
-            if (res.ok) {
-                Swal.fire({ icon: 'success', title: 'ប្តូររូបភាពជោគជ័យ', timer: 1000, showConfirmButton: false });
-                fetchProfile();
-            } else {
-                fetchProfile();
-                Swal.fire('បរាជ័យ', 'មិនអាច Upload រូបភាពបានទេ', 'error');
+            try {
+                const res = await fetch(`${API_BASE_URL}/profile/avatar`, {
+                    method: "POST",
+                    headers: { 'Authorization': `Bearer ${Token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'ប្តូររូបភាពជោគជ័យ', timer: 1000, showConfirmButton: false });
+                    fetchProfile();
+                } else { throw new Error(); }
+            } catch (err) {
+                updateAvatarUI(originalUrl); // បើបរាជ័យ ប្តូរមកវិញ
+                Swal.fire('បរាជ័យ', 'មិនអាច Upload បានទេ', 'error');
             }
-        } catch (err) {
-            fetchProfile();
+        } else {
+            updateAvatarUI(originalUrl); // បើ Cancel ប្តូរមកវិញ
         }
     });
 }
 
+// --- ៦. លុប Avatar ---
 window.btnDelAvatar = async function() {
     const result = await Swal.fire({
         title: 'លុបរូបភាព?',
@@ -180,18 +188,16 @@ window.btnDelAvatar = async function() {
             if (res.ok) {
                 updateAvatarUI("https://i.pravatar.cc/200?img=12");
                 Swal.fire('ជោគជ័យ', 'រូបភាពត្រូវបានលុប', 'success');
-                fetchProfile(); // Update Topbar
+                fetchProfile();
             }
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     }
 }
 
-// --- ៦. Helper Functions ---
+// --- ៧. Helper Functions ---
 function updateAvatarUI(url) {
     const mainAvatar = document.getElementById("avatarImg");
-    const topAvatar = document.querySelector(".avatar");
+    const topAvatar = document.getElementById("topAvatar");
     if (mainAvatar) mainAvatar.src = url;
     if (topAvatar) topAvatar.src = url;
 }
@@ -208,7 +214,7 @@ window.btnedit = function() {
     inputs.forEach(input => input.disabled = !isEditing);
 }
 
-// --- ៧. ចាប់ផ្តើមដំណើរការ ---
+// --- ៨. ចាប់ផ្តើមដំណើរការ ---
 document.addEventListener("DOMContentLoaded", () => {
     fetchProfile();
     setupAvatarUpload();

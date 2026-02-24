@@ -81,28 +81,30 @@
 
         <!-- Profile dropdown -->
         <div class="dropdown">
-          <button class="btn profile-pill dropdown-toggle d-flex align-items-center gap-2" type="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            <img class="avatar" src="https://i.pravatar.cc/100?img=12" alt="avatar">
-            <span class="fw-bold">User Admin</span>
-          </button>
+  <button class="btn profile-pill dropdown-toggle d-flex align-items-center gap-2" type="button"
+    data-bs-toggle="dropdown" aria-expanded="false">
+    <img id="topAvatar" class="avatar" src="https://i.pravatar.cc/100?img=12" alt="avatar">
+    <span class="fw-bold" id="topbarName">User Admin</span>
+  </button>
 
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 16px; overflow:hidden;">
-            <li>
-              <a class="dropdown-item py-2" href="profile.html">
-                <i class="bi bi-person me-2"></i> Profile
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider my-1">
-            </li>
-            <li>
-              <a class="dropdown-item py-2 text-danger logout-trigger" href="#">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-              </a>
-            </li>
-          </ul>
-        </div>
+  <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 16px; overflow:hidden;">
+    <li class="px-3 py-2 border-bottom bg-light">
+       <div class="small text-muted">Logged in as:</div>
+       <div class="fw-sm" id="topbarEmail" style="font-size: 13px;">user@example.com</div>
+    </li>
+    <li>
+      <a class="dropdown-item py-2" href="profile.html">
+        <i class="bi bi-person me-2"></i> Profile
+      </a>
+    </li>
+    <li><hr class="dropdown-divider my-1"></li>
+    <li>
+      <a class="dropdown-item py-2 text-danger logout-trigger" href="#">
+        <i class="bi bi-box-arrow-right me-2"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
       </div>
 
       <!-- CONTENT -->

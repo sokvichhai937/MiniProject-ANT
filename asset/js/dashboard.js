@@ -58,7 +58,13 @@
       sessionStorage.clear();
     });
 
-    // init page
-    const saved = localStorage.getItem("activePage");
-    showPage(pages.includes(saved) ? saved : "dashboard");
+    // TOKEN Validate=====
+      if (!token) {
+        window.location.href = "../index.html";
+      }
+
+
+    // ===========================================
     
+
+

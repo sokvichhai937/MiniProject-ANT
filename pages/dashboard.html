@@ -202,7 +202,7 @@
         console.log(data.data.items);
         data.data.items.forEach(element => {
           articlesGrid.innerHTML += `
-          <div class="col-12 col-md-6 col-xl-4 article-item" data-title="kkkkk chou youra">
+          <div class="col-12 col-md-6 col-xl-4 article-item" data-title="${element.title.toLowerCase()}">
               <a class="text-decoration-none text-reset" href="article-detail.html?id=${element.id}">
                 <article class="cardX h-100">
                   <div class="cardX-thumb">

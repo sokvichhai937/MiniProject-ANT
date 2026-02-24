@@ -435,6 +435,12 @@
             `;
 
             createCategoryName.value = "";
+
+              // close modal
+            const modalEl = document.getElementById("createCategoryModal");
+            const modal =
+            bootstrap.Modal.getInstance(modalEl) ||
+            new bootstrap.Modal(modalEl);
           })
           .catch((err) => console.log(err));
       }

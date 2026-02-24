@@ -57,3 +57,14 @@
       localStorage.removeItem("token");
       sessionStorage.clear();
     });
+
+    // TOKEN Validate=====
+      if (!token) {
+        window.location.href = "../index.html";
+      }
+
+
+    // ===========================================
+    
+
+

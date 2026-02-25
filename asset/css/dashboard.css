@@ -540,7 +540,7 @@
   }
 
   .cardX-thumb{
-    height: 260px;
+    height: 360px !important;
     background:
       radial-gradient(260px 220px at 35% 28%, rgba(255,255,255,.75) 0%, rgba(255,255,255,0) 60%),
       linear-gradient(135deg, rgba(207,233,234,.95), rgba(215,214,255,.95));
@@ -552,12 +552,11 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    display:block;
   }
 
   .cardX-icon{
     width: 92px;
-    height: 92px;
+    height: 92px !;
     border-radius: 24px;
     display:grid;
     place-items:center;

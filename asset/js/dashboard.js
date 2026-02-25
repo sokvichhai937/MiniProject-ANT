@@ -56,13 +56,17 @@
     document.getElementById("confirmLogout").addEventListener("click", () => {
       localStorage.removeItem("token");
       sessionStorage.clear();
-<<<<<<< HEAD
-    });
-=======
     });
 
-    // init page
-    const saved = localStorage.getItem("activePage");
-    showPage(pages.includes(saved) ? saved : "dashboard");
+    // TOKEN Validate=====
+      if (!token) {
+        window.location.href = "../index.html";
+      }
+
+
+    // ===========================================
     
->>>>>>> 14b204e9ebb45b6356d6e79032e9ab1cb767870b
+=======
+
+
+

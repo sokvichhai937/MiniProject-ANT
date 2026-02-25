@@ -1,79 +1,236 @@
-//JS (edit mode + avatar preview) 
+/**
+ * Profile Management Module
+ * Features: GET, UPDATE, UPLOAD (with Preview), DELETE, UI Sync
+ */
 
-  const btnEdit = document.getElementById("btnEdit");
-  const btnCancel = document.getElementById("btnCancel");
-  const saveRow = document.getElementById("saveRow");
-  const form = document.getElementById("profileForm");
+const API_BASE_URL = 'https://blogs2.csm.linkpc.net/api/v1';
+const Token = localStorage.getItem("token");
 
-  const firstName = document.getElementById("firstName");
-  const lastName = document.getElementById("lastName");
-  const email = document.getElementById("email");
+if (!Token) {
+    window.location.href = "../login.html";
+}
 
-  const displayName = document.getElementById("displayName");
-  const displayEmail = document.getElementById("displayEmail");
+const headers = {
+    'Authorization': `Bearer ${Token}`,
+    'Accept': 'application/json'
+};
 
-  const avatarInput = document.getElementById("avatarInput");
-  const avatarImg = document.getElementById("avatarImg");
-  const delBtn = document.querySelector(".pro-del");
+// --- ១. មុខងារ Validation ---
+function validateProfile(data) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.firstName || data.firstName.length < 2) {
+        Swal.fire('កំហុស', 'នាមត្រកូលត្រូវមានយ៉ាងតិច ២ តួអក្សរ', 'warning');
+        return false;
+    }
+    if (!data.lastName || data.lastName.length < 2) {
+        Swal.fire('កំហុស', 'នាមខ្លួនត្រូវមានយ៉ាងតិច ២ តួអក្សរ', 'warning');
+        return false;
+    }
+    if (!emailRegex.test(data.email)) {
+        Swal.fire('កំហុស', 'ទម្រង់អ៊ីមែលមិនត្រឹមត្រូវឡើយ', 'warning');
+        return false;
+    }
+    return true;
+}
 
-  let backup = {
-    first: firstName.value,
-    last: lastName.value,
-    email: email.value
-  };
+// --- ២. មុខងារ Update UI នៅគ្រប់កន្លែង (Card & Topbar) ---
+function updateUserInformationUI(user) {
+    const fullName = `${user.firstName} ${user.lastName}`;
 
-  function setEditMode(on){
-    [firstName, lastName, email].forEach(el => {
-      el.disabled = !on;
-      el.classList.toggle("is-edit", on);
+    // Update ក្នុង Profile Card
+    const displayName = document.getElementById("displayName");
+    const displayEmail = document.getElementById("displayEmail");
+    if (displayName) displayName.textContent = fullName;
+    if (displayEmail) displayEmail.textContent = user.email;
+
+    // Update ក្នុង Topbar (ប្រើ ID តាម HTML របស់អ្នក)
+    const topbarName = document.getElementById("topbarName");
+    const topbarEmail = document.getElementById("topbarEmail");
+    if (topbarName) topbarName.textContent = fullName;
+    if (topbarEmail) topbarEmail.textContent = user.email;
+
+    if (user.avatar) {
+        updateAvatarUI(user.avatar);
+    }
+}
+
+// --- ៣. ទាញទិន្នន័យ Profile ---
+async function fetchProfile() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/profile`, { method: 'GET', headers: headers });
+        const result = await res.json();
+
+        if (res.ok && result.data) {
+            const user = result.data;
+            document.getElementById('firstName').value = user.firstName || '';
+            document.getElementById('lastName').value = user.lastName || '';
+            document.getElementById('email').value = user.email || '';
+            updateUserInformationUI(user);
+        }
+    } catch (err) {
+        console.error("Fetch Profile Error:", err);
+    }
+}
+
+// --- ៤. កែប្រែព័ត៌មាន (Update Name & Email) ---
+function setupProfileForm() {
+    const profileForm = document.getElementById("profileForm");
+    if (!profileForm) return;
+
+    profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            firstName: document.getElementById("firstName").value.trim(),
+            lastName: document.getElementById("lastName").value.trim(),
+            email: document.getElementById("email").value.trim()
+        };
+
+        if (!validateProfile(payload)) return;
+
+        const btnSave = document.getElementById("btnSave");
+        const originalText = btnSave.innerHTML;
+        btnSave.disabled = true;
+        btnSave.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> កំពុងរក្សាទុក...`;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/profile`, {
+                method: "PUT",
+                headers: { ...headers, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                updateUserInformationUI(payload); // Update UI ភ្លាមៗ
+                await Swal.fire({ icon: 'success', title: 'រក្សាទុកជោគជ័យ', timer: 1500, showConfirmButton: false });
+                window.btnedit(); // បិទ Mode Edit
+                fetchProfile();   // ទាញទិន្នន័យពិតពី Server មកផ្ទៀងផ្ទាត់
+            } else {
+                const result = await res.json();
+                throw new Error(result.message || "មិនអាចកែប្រែបានទេ");
+            }
+        } catch (err) {
+            Swal.fire('បរាជ័យ', err.message, 'error');
+        } finally {
+            btnSave.disabled = false;
+            btnSave.innerHTML = originalText;
+        }
     });
-    saveRow.style.display = on ? "flex" : "none";
-    btnEdit.innerHTML = on
-      ? '<i class="bi bi-pencil-square me-2"></i> Editing...'
-      : '<i class="bi bi-pencil-square me-2"></i> Edit Profile';
-    btnEdit.disabled = on;
-    if(on) firstName.focus();
-  }
+}
 
-  btnEdit.addEventListener("click", () => {
-    backup = { first: firstName.value, last: lastName.value, email: email.value };
-    setEditMode(true);
-  });
+// --- ៥. Upload Avatar (ជាមួយ Preview & Confirmation) ---
+function setupAvatarUpload() {
+    const avatarInput = document.getElementById("avatarInput");
+    if (!avatarInput) return;
 
-  btnCancel.addEventListener("click", () => {
-    firstName.value = backup.first;
-    lastName.value = backup.last;
-    email.value = backup.email;
-    setEditMode(false);
-  });
+    avatarInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire('កំហុស', 'រូបភាពមិនត្រូវលើសពី 2MB ឡើយ', 'error');
+            return;
+        }
 
-    // update header display
-    displayName.textContent = (firstName.value + " " + lastName.value).trim();
-    displayEmail.textContent = email.value.trim();
+        const previewUrl = URL.createObjectURL(file);
+        const originalUrl = document.getElementById("avatarImg").src;
+        updateAvatarUI(previewUrl); // បង្ហាញ Preview
 
-    setEditMode(false);
+        const confirm = await Swal.fire({
+            title: 'ប្តូររូបភាព?',
+            text: "តើអ្នកចង់ប្រើរូបភាពថ្មីនេះមែនទេ?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'យល់ព្រម',
+            cancelButtonText: 'បោះបង់'
+        });
 
-    // ✅ Replace with API update request
-    alert("Profile updated ✅ (send to API here)");
-  });
+        if (confirm.isConfirmed) {
+            const formData = new FormData();
+            formData.append("avatar", file);
 
-  // avatar preview
-  avatarInput.addEventListener("change", () => {
-    const file = avatarInput.files && avatarInput.files[0];
-    if(!file) return;
-    const url = URL.createObjectURL(file);
-    avatarImg.src = url;
+            try {
+                const res = await fetch(`${API_BASE_URL}/profile/avatar`, {
+                    method: "POST",
+                    headers: { 'Authorization': `Bearer ${Token}` },
+                    body: formData
+                });
 
-    // ✅ Replace with upload API
-    // auto-save behavior
-  });
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'ប្តូររូបភាពជោគជ័យ', timer: 1000, showConfirmButton: false });
+                    fetchProfile();
+                } else { throw new Error(); }
+            } catch (err) {
+                updateAvatarUI(originalUrl); // បើបរាជ័យ ប្តូរមកវិញ
+                Swal.fire('បរាជ័យ', 'មិនអាច Upload បានទេ', 'error');
+            }
+        } else {
+            updateAvatarUI(originalUrl); // បើ Cancel ប្តូរមកវិញ
+        }
+    });
+}
 
-  // remove avatar (demo)
-  delBtn.addEventListener("click", () => {
-    avatarImg.src = "https://i.pravatar.cc/200?img=12";
+// --- ៦. លុប Avatar ---
+window.btnDelAvatar = async function() {
+    const result = await Swal.fire({
+        title: 'លុបរូបភាព?',
+        text: "តើអ្នកចង់លុបរូបភាពចេញមែនទេ?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'យល់ព្រម',
+        cancelButtonText: 'បោះបង់'
+    });
 
-    // ✅ Replace with delete avatar API
-  });
+    if (result.isConfirmed) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/profile/avatar`, { method: "DELETE", headers: headers });
+            if (res.ok) {
+                updateAvatarUI("https://i.pravatar.cc/200?img=12");
+                Swal.fire('ជោគជ័យ', 'រូបភាពត្រូវបានលុប', 'success');
+                fetchProfile();
+            }
+        } catch (err) { console.error(err); }
+    }
+}
+
+// --- ៧. Helper Functions ---
+function updateAvatarUI(url) {
+    const mainAvatar = document.getElementById("avatarImg");
+    const topAvatar = document.getElementById("topAvatar");
+    if (mainAvatar) mainAvatar.src = url;
+    if (topAvatar) topAvatar.src = url;
+}
+
+window.btnedit = function() {
+    const form = document.getElementById("profileForm");
+    const saveRow = document.getElementById("saveRow");
+    const btnEdit = document.getElementById("btnEdit");
+    const inputs = document.querySelectorAll(".formP");
+
+    const isEditing = form.classList.toggle("is-editing");
+    saveRow.style.display = isEditing ? "flex" : "none";
+    btnEdit.style.display = isEditing ? "none" : "inline-block";
+    inputs.forEach(input => input.disabled = !isEditing);
+}
+
+// --- ៨. ចាប់ផ្តើមដំណើរការ ---
+document.addEventListener("DOMContentLoaded", () => {
+    fetchProfile();
+    setupAvatarUpload();
+    setupProfileForm();
+
+    document.getElementById("btnEdit")?.addEventListener("click", window.btnedit);
+
+    document.querySelectorAll(".logout-trigger").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            new bootstrap.Modal(document.getElementById('logoutModal')).show();
+        });
+    });
+
+    document.getElementById("confirmLogout")?.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.href = "../index.html";
+    });
+});

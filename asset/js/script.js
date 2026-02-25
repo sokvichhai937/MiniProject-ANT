@@ -1,4 +1,4 @@
-//let token = localStorage.getItem("token");
+let token = localStorage.getItem("token");
 // មុខងារសម្រាប់បង្ហាញ Modal ពេលចុចលើប៊ូតុង Logout ក្នុង Sidebar ឬ Profile Dropdown
 document.querySelectorAll(".logout-trigger").forEach((btn) => {
   btn.addEventListener("click", (e) => {

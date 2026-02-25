@@ -27,11 +27,11 @@ fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own?search=&_page=1&_per_pa
                 <td>${allArt.content}</td>
                 <td><img src="${allArt.thumbnail}" alt="" width="100" height="100" class="rounded-3"></td>
                 <td>
-                    <button class="icon-btn border border-1 border-secondary rounded-1" 
+                    <button class="icon-btn border border-1 border-secondary rounded-5" 
                         onclick="editid(${allArt.id})">
                         <i class="fa-regular fa-pen-to-square text-secondary"></i>
                     </button>
-                    <button class="icon-btn border border-1 border-danger rounded-1"
+                    <button class="icon-btn border border-1 border-danger rounded-5"
                         onclick="openDeleteModal(${allArt.id})">
                         <i class="fa-solid fa-trash-can text-danger fs-6"></i>
                     </button>

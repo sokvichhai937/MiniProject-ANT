@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,10 +9,10 @@
   <link rel="stylesheet" href="../asset/css/dashboard.css">
 
   <!-- Bootstrap + Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="../asset/css/allArticles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../asset/css/allArticles.css">
 </head>
 
 <body>
@@ -23,7 +24,9 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="logo"><i class="bi bi-person-fill"></i></div>
-        <div><h5>Admin</h5></div>
+        <div>
+          <h5>Admin</h5>
+        </div>
       </div>
 
       <div class="menu-title">MENU</div>
@@ -36,14 +39,8 @@
         </a>
 
         <!-- My Articles (collapsible) -->
-        <button
-          class="nav-pill w-100 text-start active"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#articlesMenu"
-          aria-expanded="true"
-          aria-controls="articlesMenu"
-        >
+        <button class="nav-pill w-100 text-start active" type="button" data-bs-toggle="collapse"
+          data-bs-target="#articlesMenu" aria-expanded="true" aria-controls="articlesMenu">
           <span class="ic"><i class="bi bi-file-earmark-text"></i></span>
           <span class="label flex-grow-1">My Articles</span>
           <i class="bi bi-chevron-down ms-auto" style="color: rgba(31,42,51,.55)"></i>
@@ -82,19 +79,15 @@
           <button class="hamburger" type="button" id="btnToggleSidebar" aria-label="Toggle sidebar">
             <i class="bi bi-list"></i>
           </button>
-          <h1 class="page-title">All Articles</h1>
+
         </div>
 
         <!-- Profile dropdown -->
         <div class="dropdown">
-          <button
-            class="btn profile-pill dropdown-toggle d-flex align-items-center gap-2"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <img class="avatar" src="https://i.pravatar.cc/100?img=12" alt="avatar">
-            <span class="fw-bold">User Admin</span>
+          <button class="btn profile-pill dropdown-toggle d-flex align-items-center gap-2" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <img class="avatar" src="https://i.pravatar.cc/100?img=12" alt="avatar" id="avatarUser">
+            <span class="fw-bold" id="profileUser">User Admin</span>
           </button>
 
           <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 16px; overflow:hidden;">
@@ -103,7 +96,9 @@
                 <i class="bi bi-person me-2"></i> Profile
               </a>
             </li>
-            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <hr class="dropdown-divider my-1">
+            </li>
             <li>
               <!-- ✅ add logout-trigger -->
               <a class="dropdown-item py-2 text-danger logout-trigger" href="#">
@@ -115,98 +110,152 @@
       </div>
 
       <!-- CONTENT -->
-         <section class="content-surface">
+      <section class="content-surface">
 
-  <div class="aTable-wrap">
+        <div class="aTable-wrap">
 
-    <!-- Header -->
-    <div class="aTable-head">
-      <div>
-        <h2 class="aTable-title">All articles</h2>
-        <div class="aTable-sub">Manage your articles, edit or delete.</div>
-      </div>
+          <!-- Header -->
+          <div class="aTable-head">
+            <div>
+              <h2 class="aTable-title">All articles</h2>
+              <div class="aTable-sub">Manage your articles, edit or delete.</div>
+            </div>
 
-      <a class="btn aTable-btn" href="create-article.html">
-        <i class="bi bi-plus-circle me-2"></i> Create New Article
-      </a>
-    </div>
+            <a class="btn aTable-btn" href="create-article.html">
+              <i class="bi bi-plus-circle me-2"></i> Create New Article
+            </a>
+          </div>
 
-    <!-- Table -->
-    <div class="aTable-card">
-      <div class="table-responsive">
-        <table class="table align-middle mb-0">
-                <div class="glass-card p-4">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Title</th>
-                                <th scope="col">Category</th>
-                                <th scope="col">Content</th>
-                                <th scope="col">Thumbnail</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody">
-                            <!-- <tr>
+          <!-- Table -->
+          <div class="aTable-card">
+            <div class="table-responsive">
+              <div class="glass-card p-4">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Title</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Content</th>
+                      <th scope="col">Thumbnail</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody">
+                    <!-- <tr>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                             </tr> -->
-                        </tbody>
-                    </table>
+                  </tbody>
+                </table>
 
-                    <!-- Success Modal -->
-                    <div id="deleteConfirmModal" class="modal" tabindex="-1" style="display:none;">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5>Confirm Delete</h5>
-                                    <button type="button" onclick="closeModal()" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to delete this article?</p>
-                                </div>
-                                <div class="modal-actions modal-footer">
-                                    <button onclick="closeModal()">Cancel</button>
-                                    <button onclick="confirmDelete()">OK</button>
-                                </div>
-                            </div>
-                        </div>
+
+                <!--=========================== Success Modal ==================-->
+                <div id="deleteConfirmModal" class="modal" tabindex="-1" style="display:none;">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5>Confirm Delete</h5>
+                        <button type="button" onclick="closeModal()" class="btn-close" data-bs-dismiss="modal"
+                          aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to delete this article?</p>
+                      </div>
+                      <div class="modal-actions modal-footer">
+                        <button onclick="closeModal()">Cancel</button>
+                        <button onclick="confirmDelete()">Delete</button>
+                      </div>
                     </div>
-
+                  </div>
                 </div>
-        </table>
-      </div>
-    </div>
+              </div>
 
-    <!-- Footer / Pagination -->
-    <div class="aTable-foot">
-      <div class="text-muted fw-semibold">Showing 1–1 of 1</div>
+            </div>
+          </div>
 
-      <nav aria-label="pagination">
-        <ul class="pagination mb-0 pagX">
-          <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+          <!-- ====================================edit====================================== -->
+          <form id="articleForm" class="edit-form d-none" novalidate>
+            <div class="create-head">
+              <h2 id="formTitle" class="edit-title"></h2>
+            </div>
 
-  </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Title <span class="text-danger">*</span></label>
+              <div class="field-wrap">
+                <input id="title" type="text" class="form-control formX" placeholder="Enter title..." required>
+                <div class="invalid-feedback" id="titleError"></div>
+              </div>
+            </div>
 
-</section>
-  
+            <div class="mb-3">
+              <label class="form-label fw-bold">Category</label>
+              <select id="categorySelect" class="form-select" required>
+                <option value="">Select category</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Thumbnail</label>
+
+              <div class="thumb-row">
+                <input id="thumbnail" type="file" class="form-control formX" accept="image/*">
+                <div class="thumb-preview" id="thumbPreview">
+                  <i class="bi bi-image"></i>
+                  <span>Preview</span>
+                </div>
+              </div>
+
+              <div class="text-muted fw-semibold mt-2" style="font-size:.9rem">
+                Recommended: JPG/PNG, 1200×630 or similar.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Content <span class="text-danger">*</span></label>
+              <div class="field-wrap textarea-wrap">
+                <textarea id="content" class="form-control formX" rows="9" placeholder="Write content here..."
+                  required></textarea>
+                <div class="invalid-feedback" id="contentError"></div>
+              </div>
+            </div>
+
+            <div class="create-actions">
+              <a class="btn btn-light back-btn2">
+                <i class="bi bi-arrow-left me-2"></i> Back to Articles
+              </a>
+              <button id="submitBtn" type="submit" class="btn btn-publish">
+                <i class="bi bi-send me-2"></i> Publish Article
+              </button>
+            </div>
+          </form>
+          <!-- Footer / Pagination -->
+          <div class="aTable-foot">
+            <div class="text-muted fw-semibold">Showing 1–1 of 1</div>
+
+            <nav aria-label="pagination">
+              <ul class="pagination mb-0 pagX">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+        </div>
+
+      </section>
+
     </main>
   </div>
   <!-- /app -->
@@ -230,11 +279,11 @@
       </div>
     </div>
   </div>
-
+</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../../asset/js/scriptallArticles.js"></script>
+<script src="../asset/js/scriptallArticles.js"></script>
 <script src="../asset/js/dashboard.js"></script>
-<!-- ===== JS (optional demo: fill edit/delete modals) ===== -->
+<script src="../asset/js/script.js"></script>
 <script>
   const editModal = document.getElementById("editCategoryModal");
   editModal?.addEventListener("show.bs.modal", (e) => {
@@ -254,7 +303,7 @@
   // Demo buttons (replace with API calls)
   document.getElementById("btnCreateCategory")?.addEventListener("click", () => {
     const name = document.getElementById("createCategoryName").value.trim();
-    if(!name) return;
+    if (!name) return;
     alert("Create: " + name);
   });
 
@@ -266,5 +315,6 @@
     alert("Deleted: " + document.getElementById("deleteCatName").textContent);
   });
 </script>
-</body>
+
+
 </html>

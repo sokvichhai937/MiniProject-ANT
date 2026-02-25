@@ -1,3 +1,4 @@
+//let token = localStorage.getItem("token");
 // មុខងារសម្រាប់បង្ហាញ Modal ពេលចុចលើប៊ូតុង Logout ក្នុង Sidebar ឬ Profile Dropdown
 document.querySelectorAll(".logout-trigger").forEach((btn) => {
   btn.addEventListener("click", (e) => {
@@ -25,3 +26,26 @@ document.getElementById("confirmLogout")?.addEventListener("click", () => {
     window.location.href = "../index.html";
   }
 })();
+
+// ============ Get Profile ========================================
+function getProfile(){
+       fetch('https://blogs2.csm.linkpc.net/api/v1/auth/profile',{
+        method : 'GET',
+        headers : {
+          'Content-Type' : 'application/json',
+          'Authorization' : `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        document.getElementById('avatarUser').src = data.data.avatar;
+        document.getElementById('profileUser').textContent = data.data.firstName + " " + data.data.lastName;
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    }
+    getProfile();
+
+

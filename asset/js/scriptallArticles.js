@@ -1,111 +1,232 @@
-let token = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyNjQsImlhdCI6MTc3MTQ5Mjg1NCwiZXhwIjoxNzcyMDk3NjU0fQ.dK69T0wKxb2RABjmqWW7JiEr_uXSfe-2W7qXgOkXOrI`;
+let token = localStorage.getItem("token") || sessionStorage.getItem("token");
+let tableBody = document.getElementById("tbody");
+
 fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own?search=&_page=1&_per_page=100&sortBy=createdAt&sortDir=asc`, {
-    headers: {
-        'Authorization': `${token}`
-    }
-
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }
 })
-    .then(res => res.json())
-    .then(dataArticle => {
-        let allArticles = dataArticle.data.items;
-        let tableBody = document.getElementById("tbody");
-        allArticles.forEach(ownArt => {
-            tableBody.innerHTML += `<tr>
-                                    <td>${ownArt.title}</td>
-                                    <td>${ownArt.category}</td>
-                                    <td>${ownArt.content}</td>
-                                    <td><img src="${ownArt.thumbnail}" alt="" width="100" hight="100" class="rounded-3"></td>
-                                    <td>
-                                    <button class="icon-btn1 border-1 border-secondary rounded-1" 
-                                        onclick="openEditModal(${ownArt.id})">
-                                        <i class="fa-regular fa-pen-to-square text-secondary"></i>
-                                    </button>
-                                    <button class="icon-btn border border-1 border-danger rounded-1"
-                                        onclick="openDeleteModal(${ownArt.id})">
-                                        <i class="fa-solid fa-trash-can text-danger fs-6"></i>
-                                    </button>
-                                  </td>
-                                    </tr>
-                                    `
+  .then(res => res.json())
+  .then(dataArticle => {
+    let allArticles = dataArticle.data.items;
+    if (!allArticles || allArticles.length === 0) {
+      tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-5">
+                    <h5 class="m-0">No data found</h5>
+                </td>
+            </tr>
+        `;
+    }
+    allArticles.forEach(allArt => {
 
-        })
-    })    
+      tableBody.innerHTML += `
+            <tr>
+                <td>${allArt.title}</td>
+                <td>${allArt.category?.name || allArt.categoryId}</td>
+                <td>${allArt.content}</td>
+                <td><img src="${allArt.thumbnail}" alt="" width="100" height="100" class="rounded-3"></td>
+                <td>
+                    <button class="icon-btn border border-1 border-secondary rounded-1" 
+                        onclick="editid(${allArt.id})">
+                        <i class="fa-regular fa-pen-to-square text-secondary"></i>
+                    </button>
+                    <button class="icon-btn border border-1 border-danger rounded-1"
+                        onclick="openDeleteModal(${allArt.id})">
+                        <i class="fa-solid fa-trash-can text-danger fs-6"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+
+    });
+  })
+
+
 
 //==============================delete====================================
-
-let articleIdToDelete = null;
-
 function openDeleteModal(id) {
-    articleIdToDelete = id;
-    document.getElementById("deleteConfirmModal").style.display = "flex";
+  articleIdToDelete = id;
+  document.getElementById("deleteConfirmModal").style.display = "flex";
 }
 
 function closeModal() {
-    document.getElementById("deleteConfirmModal").style.display = "none";
+  document.getElementById("deleteConfirmModal").style.display = "none";
 }
 
 function confirmDelete() {
-    if (!articleIdToDelete) return;
-
-    fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleIdToDelete}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': token }
+  fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleIdToDelete}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(async res => {
+      if (res.ok) {
+        location.reload();
+      } else {
+        alert("Failed to delete article");
+      }
     })
-        .then(res => {
-            if (res.ok) {
-                location.reload();
-            } else {
-                alert("Failed to delete article");
-            }
-        })
-        .catch(err => alert(err.message));
+    .catch(err => alert("Error: " + err.message));
 
-    closeModal();
-}
-//=================================edit==========================================
-let articleIdToedit = null;
-function confirmEdit()
-{
-    fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleIdToedit}`, {
-        method: 'EDIT',
-        headers: { 'Authorization': token }
-    })
-        .then(res => {
-            if (res.ok) {
-                location.reload();
-            }
-        })
-        .catch(err => alert(err.message));
-
-    closeModal();
+  closeModal();
 }
 
-function openEditModal(id) {
-    articleIdToedit = id;
-}
+//====================================edit==============================
 
+// DOM references
+let tablecard = document.querySelector(".aTable-card");
+let tablehead = document.querySelector(".aTable-head");
+let formTitle = document.getElementById("formTitle");
+let submitBtn = document.getElementById("submitBtn");
+let articleForm = document.getElementById("articleForm");
+let titleInput = document.getElementById("title");
+let categorySelect = document.getElementById("categorySelect");
+let contentInput = document.getElementById("content");
 
-saveEdit = (id) =>{
-    fetch(`https:blogs2.csm.linkpc.net/api/v1/categories${articleIdToedit}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            title: GetTitle.value,
-            description: GetDescription.value,
-            published: GetPublished.checked ? 1 : 0
-        })
-    })
+let articleId = null; // set when editing
+// let token = "..."; // your JWT token
+
+// Load categories
+function loadCategories() {
+  fetch("https://blogs2.csm.linkpc.net/api/v1/categories", {
+    headers: { "Authorization": "Bearer " + token }
+  })
     .then(res => res.json())
     .then(data => {
-        isEdit = null;
-        titleForm.innerHTML = "Create New Item";
-        btnSave.innerHTML = "Submit";
-        myForm.reset();
-        displayBook();
-        console.log(data);
+      const items = data.data.items;
+      categorySelect.innerHTML = `<option value="">Select category</option>`;
+      items.forEach(cat => {
+        categorySelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+      });
     })
+    .catch(err => console.error("Category fetch error:", err));
 }
 
+// Edit article
+function editid(id) {
+  articleId = id;
+  articleForm.classList.remove("d-none");
+  tablecard.innerHTML = "";
+  tablehead.innerHTML = "";
+  formTitle.innerText = "Edit Article";
+  submitBtn.innerHTML = `<i class="bi bi-save me-2"></i> Update Article`;
 
+  fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(data => {
+      const article = data.data || data;
+      titleInput.value = article.title || "";
+      contentInput.value = article.content || "";
+      categorySelect.value = article.categoryId || "";
+
+      // ✅ Load current thumbnail when editing
+      loadThumbnail(articleId);
+    })
+    .catch(err => console.error("Fetch error:", err));
+}
+
+// Show current thumbnail
+async function loadThumbnail(articleId) {
+  try {
+    const res = await fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}/thumbnail`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    if (!res.ok) {
+      document.getElementById("thumbPreview").innerHTML =
+        `<p>No thumbnail available</p>`;
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    document.getElementById("thumbPreview").innerHTML =
+      `<img src="${url}" alt="Thumbnail" style="max-height:100px;">`;
+  } catch (err) {
+    console.error("Thumbnail fetch error:", err);
+  }
+}
+
+// Handle form submit
+articleForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  let url = "https://blogs2.csm.linkpc.net/api/v1/articles";
+  let method = "POST";
+
+  if (articleId) {
+    url = `https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}`;
+    method = "PUT";
+  }
+
+  const edit = {
+    title: titleInput.value.trim(),
+    content: contentInput.value.trim(),
+    categoryId: parseInt(categorySelect.value)
+  };
+
+  try {
+    // --- STEP 1: update text fields ---
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify(edit)
+    });
+
+    if (!res.ok) throw new Error("Article update failed: " + res.status);
+    await res.json();
+
+    // --- STEP 2: upload thumbnail if selected ---
+    const fileInput = document.getElementById("thumbnail");
+    if (fileInput.files.length > 0 && articleId) {
+      const formData = new FormData();
+
+      // ✅ Backend expects "thumbnail" as the field name
+      formData.append("thumbnail", fileInput.files[0]);
+
+      const thumbRes = await fetch(
+        `https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}/thumbnail`,
+        {
+          method: "POST", // ✅ Use POST for uploads
+          headers: {
+            "Authorization": "Bearer " + token
+          },
+          body: formData
+        }
+      );
+
+      if (!thumbRes.ok) throw new Error("Thumbnail upload failed: " + thumbRes.status);
+      await thumbRes.json();
+    }
+
+    // --- STEP 3: redirect ---
+    window.location.href = "../pages/all-article.html";
+  } catch (err) {
+    alert("Update failed: " + err.message);
+    console.error(err);
+  }
+});
+
+loadCategories();
+
+// Preview thumbnail before upload
+document.getElementById("thumbnail").addEventListener("change", function () {
+  const preview = document.getElementById("thumbPreview");
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.innerHTML = `<img src="${e.target.result}" alt="Thumbnail" style="max-height:100px;">`;
+    };
+    reader.readAsDataURL(file);
+  }
+});

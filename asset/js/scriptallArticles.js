@@ -73,7 +73,7 @@ function confirmDelete() {
   closeModal();
 }
 
-//====================================edit==============================
+//==============================edit==============================
 let tablecard = document.querySelector(".aTable-card");
 let tablehead = document.querySelector(".aTable-head");
 let formTitle = document.getElementById("formTitle");
@@ -100,7 +100,7 @@ function loadCategories() {
     .catch(err => console.error("Category fetch error:", err));
 }
 
-//========================Edit article==============================
+//===========================Edit article==============================
 function editid(id) {
   articleId = id;
   articleForm.classList.remove("d-none");
@@ -208,7 +208,7 @@ articleForm.addEventListener("submit", async function (e) {
 
 loadCategories();
 
-// ====================Preview thumbnail before upload===============
+// =======================Preview thumbnail before upload===============
 document.getElementById("thumbnail").addEventListener("change", function () {
   const preview = document.getElementById("thumbPreview");
   const file = this.files[0];

@@ -44,21 +44,26 @@
 
     // Logout modal (Logout / Cancel)
     const logoutBtns = document.querySelectorAll(".logout-trigger");
-    const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+    const logoutModalEl = document.getElementById("logoutModal");
+    const logoutModal = logoutModalEl ? new bootstrap.Modal(logoutModalEl) : null;
 
     logoutBtns.forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
-        logoutModal.show();
+        logoutModal?.show();
       });
     });
 
-    document.getElementById("confirmLogout").addEventListener("click", () => {
+    document.getElementById("confirmLogout")?.addEventListener("click", (e) => {
+      e.preventDefault();
       localStorage.removeItem("token");
-      sessionStorage.clear();
+      window.location.href = "../index.html";
     });
 
-    // TOKEN Validate=====
-      if (!token) {
-        window.location.href = "../index.html";
-      }
+ 
+
+    
+
+
+
+

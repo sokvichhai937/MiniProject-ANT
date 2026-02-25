@@ -4,27 +4,25 @@ document.querySelectorAll(".logout-trigger").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     // បង្ហាញ Bootstrap Modal
-    const logoutModal = new bootstrap.Modal(
-      document.getElementById("logoutModal"),
-    );
+    const modalEl = document.getElementById("logoutModal");
+    if (!modalEl) {
+      return;
+    }
+    const logoutModal = new bootstrap.Modal(modalEl);
     logoutModal.show();
   });
 });
 
 // មុខងារចាកចេញពិតប្រាកដ (លុប Token និងបញ្ជូនទៅទំព័រ Login)
-document.getElementById("confirmLogout")?.addEventListener("click", () => {
+document.getElementById("confirmLogout")?.addEventListener("click", (e) => {
+  e.preventDefault();
   // ១. លុប Token ចេញពី localStorage
   localStorage.removeItem("token");
-
   // ២. បញ្ជូនអ្នកប្រើប្រាស់ទៅកាន់ទំព័រ Login
   window.location.href = "../index.html";
 });
 (function () {
   const token = localStorage.getItem("token");
-  if (!token) {
-    // បើគ្មាន Token ទេ គឺមិនឱ្យនៅទំព័រនេះឡើយ
-    window.location.href = "../index.html";
-  }
 })();
 
 // ============ Get Profile ========================================

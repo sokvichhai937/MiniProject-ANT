@@ -6,14 +6,14 @@ const headers = {
     'Accept': 'application/json'
 };
 
-// --- ចាប់យក Elements (បន្ថែមការឆែក Null ដើម្បីការពារ error) ---
+// --- ចាប់យក Elements ---
 const avatarImg = document.getElementById("avatarImg");
 const avatarInput = document.getElementById("avatarInput");
 const displayName = document.getElementById("displayName");
 const displayEmail = document.getElementById("displayEmail");
+const profileForm = document.getElementById("profileForm");
 
-
-// ១. មុខងារទាញទិន្នន័យ Profile (GET /auth/profile)
+// ១. មុខងារទាញទិន្នន័យ Profile (GET)
 async function fetchProfile() {
     try {
         const res = await fetch(`${API_BASE_URL}/auth/profile`, { 
@@ -23,137 +23,129 @@ async function fetchProfile() {
         
         const result = await res.json();
         if (res.ok && result.data) {
-            const user = result.data;
-            
-            // បង្ហាញលើ Header (ដូចក្នុងរូបភាព siv punleu)
-            if(displayName) displayName.textContent = `${user.firstName} ${user.lastName}`;
-            if(displayEmail) displayEmail.textContent = user.email;
-            
-            // បំពេញក្នុង Form (Kon Khmer)
-            if(document.getElementById('firstName')) document.getElementById('firstName').value = user.firstName;
-            if(document.getElementById('lastName')) document.getElementById('lastName').value = user.lastName;
-            if(document.getElementById('email')) document.getElementById('email').value = user.email;
-
-            // បង្ហាញរូបភាព
-            if(user.avatar && avatarImg) avatarImg.src = user.avatar;
+            updateUI(result.data);
+            // រក្សាទុកក្នុង LocalStorage ដើម្បីឱ្យបើកមកឃើញភ្លាមលើកក្រោយ (Fast Load)
+            localStorage.setItem("user_profile", JSON.stringify(result.data));
         }
-    } catch (err) { console.error("Fetch Error:", err); }
+    } catch (err) { 
+        console.error("Fetch Error:", err); 
+    }
 }
 
-avatarInput.addEventListener("change", () => {
-  //https://blogs2.csm.linkpc.net/api/v1/auth/profile/avatar
-  const file = avatarInput.files[0];
-  const formData = new FormData();
-  formData.append("avatar", file);
+// មុខងារជំនួយសម្រាប់ Update UI
+function updateUI(user) {
+    if(displayName) displayName.textContent = `${user.firstName} ${user.lastName}`;
+    if(displayEmail) displayEmail.textContent = user.email;
+    
+    if(document.getElementById('firstName')) document.getElementById('firstName').value = user.firstName;
+    if(document.getElementById('lastName')) document.getElementById('lastName').value = user.lastName;
+    if(document.getElementById('email')) document.getElementById('email').value = user.email;
 
-  fetch(`${API_BASE_URL}/profile/avatar`, {
-    method: "POST",
-    headers: headers,
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ok && data.data) {
-      const user = data.data;
-      if(user.avatar && avatarImg) avatarImg.src = user.avatar;
-    }
-  })
-  .catch(err => console.error("Fetch Error:", err));
-});
+    if(user.avatar && avatarImg) avatarImg.src = user.avatar;
+}
 
-// ១. មុខងារ Upload Avatar
+// ២. មុខងារ Upload Avatar (Optimistic Update - ប្តូររូបភ្លាម)
 avatarInput.addEventListener("change", async () => {
     const file = avatarInput.files[0];
     if (!file) return;
 
+    // --- ជំហានទី ១: បង្ហាញរូបភាពលើ UI ភ្លាមៗដោយមិនចាំ Server ---
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        if(avatarImg) avatarImg.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // --- ជំហានទី ២: ផ្ញើទៅ Server តាមក្រោយ ---
     const formData = new FormData();
     formData.append("avatar", file);
 
     try {
         const res = await fetch(`${API_BASE_URL}/profile/avatar`, {
             method: "POST",
-            headers: { 'Authorization': `Bearer ${Token}` }, // កុំដាក់ Content-Type ពេលប្រើ FormData
+            headers: { 'Authorization': `Bearer ${Token}` },
             body: formData
         });
 
-        const data = await res.json();
         if (res.ok) {
-            Swal.fire({ icon: 'success', title: 'ប្តូររូបភាពជោគជ័យ', timer: 1500, showConfirmButton: false });
-            fetchProfile(); // ហៅមកវិញដើម្បី Update រូបភាពគ្រប់កន្លែង
+            Swal.fire({ icon: 'success', title: 'ប្តូររូបភាពជោគជ័យ', timer: 1000, showConfirmButton: false });
         } else {
-            Swal.fire('Error', data.message || 'Upload បរាជ័យ', 'error');
+            throw new Error("Upload failed");
         }
     } catch (err) {
         console.error("Upload Error:", err);
+        Swal.fire('Error', 'ការ Upload រូបភាពមានបញ្ហា', 'error');
+        fetchProfile(); // Rollback: ទាញរូបចាស់មកបង្ហាញវិញបើ Error
     }
 });
 
-// ២. មុខងារ Delete Avatar
+// ៣. មុខងារ Delete Avatar
 document.getElementById("btnDelAvatar").onclick = async () => {
     const confirm = await Swal.fire({
         title: 'តើអ្នកប្រាកដទេ?',
         text: "រូបភាព Profile នឹងត្រូវលុប!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
         confirmButtonText: 'យល់ព្រម',
         cancelButtonText: 'បោះបង់'
     });
 
     if (confirm.isConfirmed) {
+        // Optimistic Delete: លុបរូបចេញពី UI មុន
+        if(avatarImg) avatarImg.src = 'path/to/default-avatar.png'; 
+
         try {
             const res = await fetch(`${API_BASE_URL}/profile/avatar`, {
                 method: "DELETE",
                 headers: headers
             });
-            if (res.ok) {
-                Swal.fire('Deleted!', 'រូបភាពត្រូវបានលុប.', 'success');
-                fetchProfile();
-            }
+            if (!res.ok) throw new Error();
+            Swal.fire('Deleted!', 'រូបភាពត្រូវបានលុប.', 'success');
         } catch (err) {
-            console.error("Delete Error:", err);
+            fetchProfile(); // បើលុបមិនចេញ ឱ្យវាបង្ហាញរូបដើមវិញ
         }
     }
 };
 
-// ៣. មុខងារ Edit Profile (Save Changes)
-document.getElementById("profileForm").onsubmit = async (e) => {
+// ៤. មុខងារ Edit Profile (Save Changes - ប្តូរអក្សរភ្លាម)
+profileForm.onsubmit = async (e) => {
     e.preventDefault();
     
-    const payload = {
-        firstName: document.getElementById("firstName").value,
-        lastName: document.getElementById("lastName").value,
-        email: document.getElementById("email").value
-    };
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const email = document.getElementById("email").value;
 
+    // --- ជំហានទី ១: Update អក្សរលើ Header ភ្លាមៗ ---
+    if(displayName) displayName.textContent = `${firstName} ${lastName}`;
+    if(displayEmail) displayEmail.textContent = email;
+    btnedit(); // បិទ Mode Edit ភ្លាម កុំឱ្យ User រង់ចាំ
+
+    // --- ជំហានទី ២: ផ្ញើទៅ Server ---
     try {
         const res = await fetch(`${API_BASE_URL}/profile`, {
             method: "PUT",
             headers: { ...headers, "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ firstName, lastName, email })
         });
 
-        const result = await res.json();
         if (res.ok) {
-            await Swal.fire({ icon: 'success', title: 'រក្សាទុកជោគជ័យ', timer: 1500, showConfirmButton: false });
-            btnedit(); // បិទ Mode Edit មកវិញ
-            fetchProfile(); // Update ឈ្មោះនៅ Topbar និង Card
+            Swal.fire({ icon: 'success', title: 'រក្សាទុកជោគជ័យ', timer: 1000, showConfirmButton: false });
         } else {
-            Swal.fire('Error', result.message || 'មិនអាចកែប្រែបានទេ', 'error');
+            throw new Error();
         }
     } catch (err) {
-        console.error("Update Error:", err);
+        Swal.fire('Error', 'មិនអាចកែប្រែបានទេ', 'error');
+        fetchProfile(); // Rollback ទិន្នន័យចាស់មកវិញ
     }
 };
 
-// បន្ថែមមុខងារប៊ូតុង Edit និង Cancel ដើម្បីឱ្យ Form ដំណើរការ
+// ៥. មុខងារ Toggle Edit Mode
 window.btnedit = function() {
-    const form = document.getElementById("profileForm");
     const inputs = document.querySelectorAll(".formP");
     const saveRow = document.getElementById("saveRow");
     const btnEdit = document.getElementById("btnEdit");
 
-    const isEditing = saveRow.style.display === "none";
+    const isEditing = saveRow.style.display === "none" || saveRow.style.display === "";
 
     if (isEditing) {
         saveRow.style.display = "flex";
@@ -174,5 +166,11 @@ window.btnedit = function() {
 
 document.getElementById("btnCancel").onclick = () => btnedit();
 
-// ចាប់ផ្ដើមដំណើរការ
-window.onload = fetchProfile;
+// ៦. បើកមកឱ្យដើរភ្លាម (Instant Load from LocalStorage)
+window.onload = () => {
+    const cachedUser = localStorage.getItem("user_profile");
+    if (cachedUser) {
+        updateUI(JSON.parse(cachedUser)); // បង្ហាញទិន្នន័យចាស់សិន (លឿនបំផុត)
+    }
+    fetchProfile(); // ទាញទិន្នន័យថ្មីពី Server មកផ្ទៀងផ្ទាត់តាមក្រោយ
+};

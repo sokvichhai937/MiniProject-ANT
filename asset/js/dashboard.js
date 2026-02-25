@@ -56,18 +56,9 @@
     document.getElementById("confirmLogout").addEventListener("click", () => {
       localStorage.removeItem("token");
       sessionStorage.clear();
-<<<<<<< HEAD
-    });
-=======
     });
 
     // TOKEN Validate=====
       if (!token) {
         window.location.href = "../index.html";
       }
-
-
-    // ===========================================
-    
-
-

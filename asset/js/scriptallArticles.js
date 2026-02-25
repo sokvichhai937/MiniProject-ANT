@@ -43,7 +43,6 @@ fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/own?search=&_page=1&_per_pa
   })
 
 
-
 //==============================delete====================================
 function openDeleteModal(id) {
   articleIdToDelete = id;
@@ -75,8 +74,6 @@ function confirmDelete() {
 }
 
 //====================================edit==============================
-
-// DOM references
 let tablecard = document.querySelector(".aTable-card");
 let tablehead = document.querySelector(".aTable-head");
 let formTitle = document.getElementById("formTitle");
@@ -86,10 +83,8 @@ let titleInput = document.getElementById("title");
 let categorySelect = document.getElementById("categorySelect");
 let contentInput = document.getElementById("content");
 
-let articleId = null; // set when editing
-// let token = "..."; // your JWT token
+let articleId = null; 
 
-// Load categories
 function loadCategories() {
   fetch("https://blogs2.csm.linkpc.net/api/v1/categories", {
     headers: { "Authorization": "Bearer " + token }
@@ -105,7 +100,7 @@ function loadCategories() {
     .catch(err => console.error("Category fetch error:", err));
 }
 
-// Edit article
+//========================Edit article==============================
 function editid(id) {
   articleId = id;
   articleForm.classList.remove("d-none");
@@ -126,14 +121,12 @@ function editid(id) {
       titleInput.value = article.title || "";
       contentInput.value = article.content || "";
       categorySelect.value = article.categoryId || "";
-
-      // ✅ Load current thumbnail when editing
       loadThumbnail(articleId);
     })
     .catch(err => console.error("Fetch error:", err));
 }
 
-// Show current thumbnail
+// ========================Show current thumbnail=========================
 async function loadThumbnail(articleId) {
   try {
     const res = await fetch(`https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}/thumbnail`, {
@@ -153,7 +146,7 @@ async function loadThumbnail(articleId) {
   }
 }
 
-// Handle form submit
+// =============================Handle form submit======================
 articleForm.addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -172,7 +165,7 @@ articleForm.addEventListener("submit", async function (e) {
   };
 
   try {
-    // --- STEP 1: update text fields ---
+    // =====================update text fields==============================
     const res = await fetch(url, {
       method: method,
       headers: {
@@ -185,18 +178,16 @@ articleForm.addEventListener("submit", async function (e) {
     if (!res.ok) throw new Error("Article update failed: " + res.status);
     await res.json();
 
-    // --- STEP 2: upload thumbnail if selected ---
+    // ===================upload thumbnail if selected =============
     const fileInput = document.getElementById("thumbnail");
     if (fileInput.files.length > 0 && articleId) {
       const formData = new FormData();
-
-      // ✅ Backend expects "thumbnail" as the field name
       formData.append("thumbnail", fileInput.files[0]);
 
       const thumbRes = await fetch(
         `https://blogs2.csm.linkpc.net/api/v1/articles/${articleId}/thumbnail`,
         {
-          method: "POST", // ✅ Use POST for uploads
+          method: "POST",
           headers: {
             "Authorization": "Bearer " + token
           },
@@ -208,17 +199,16 @@ articleForm.addEventListener("submit", async function (e) {
       await thumbRes.json();
     }
 
-    // --- STEP 3: redirect ---
+    //======================redirect===========================
     window.location.href = "../pages/all-article.html";
   } catch (err) {
     alert("Update failed: " + err.message);
-    console.error(err);
   }
 });
 
 loadCategories();
 
-// Preview thumbnail before upload
+// ====================Preview thumbnail before upload===============
 document.getElementById("thumbnail").addEventListener("change", function () {
   const preview = document.getElementById("thumbPreview");
   const file = this.files[0];

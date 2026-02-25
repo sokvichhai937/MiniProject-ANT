@@ -163,7 +163,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5>Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" onclick="closeModal()" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -208,8 +208,8 @@
 </section>
   
     </main>
-  </div><!-- /app -->
-
+  </div>
+  <!-- /app -->
   <!-- ✅ Logout Confirm Modal (MUST be outside grid/section) -->
   <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -232,9 +232,8 @@
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
- <script src="../../asset/js/scriptallArticles.js"></script>
+<script src="../../asset/js/scriptallArticles.js"></script>
 <script src="../asset/js/dashboard.js"></script>
-
 <!-- ===== JS (optional demo: fill edit/delete modals) ===== -->
 <script>
   const editModal = document.getElementById("editCategoryModal");
